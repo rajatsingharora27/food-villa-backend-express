@@ -1,3 +1,4 @@
 module.exports={
-    AddProductService:require("./AddProductService")
+    AddProductService:require("./AddProductService"),
+    UsertSignUp:require("./UserSignUp")
 }

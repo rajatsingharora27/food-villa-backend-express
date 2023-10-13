@@ -44,11 +44,6 @@ class AddProductService {
    
         const newProduct =await productDetails.create(productData);
         newProduct.save()
-        //NOT
-        // DEEP COPYING IS NOT HAPPENING WHICLE STORING DATA IN CASE OF PRODUCT DETAILS
-
-
-
         return {
           isValid: TRUE,
           errorList: errorList,

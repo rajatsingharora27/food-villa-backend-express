@@ -1,3 +1,4 @@
 module.exports={
-    ProductCreationController:require("./productCreateController")
+    ProductCreationController:require("./productCreateController"),
+    SignUpController:require("./signUpController")
 }
