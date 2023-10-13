@@ -15,9 +15,6 @@ const {
 
 class AddProductService {
   addProduct = async (productData) => {
-    // if not validate product details passed in the request-> async call all
-    // const isValidName =this.#validateName(productData.productName);
-    // const isValidProductDetails=this.#validateProductDetails(productData.productDetails);
     try {
       let errorList = [];
       const [
@@ -44,10 +41,11 @@ class AddProductService {
         isValidProductAlreadyInInventory
       ) {
         //SAVE PRODCUT IN DATABSE
-        console.log(productData)
+   
         const newProduct =await productDetails.create(productData);
         newProduct.save()
-        console.log(newProduct);
+        //NOT
+        // DEEP COPYING IS NOT HAPPENING WHICLE STORING DATA IN CASE OF PRODUCT DETAILS
 
 
 

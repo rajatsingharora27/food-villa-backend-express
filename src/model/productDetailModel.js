@@ -28,15 +28,18 @@ const productDetailSchema = new Schema(
     productCategory: {
       type: String,
     },
-    productInfromation: {
-      storageAndConsumption: {type:String},
-      ingredients: {type:String},
-      allergens: {type:String},
-     
+    productDetails: {
+      storageAndConsumption: { type: String },
+      ingredients: { type: String },
+      allergens: { type: String },
     },
+    festiveTag:{
+      type:String,
+      required:true
+    }
   },
 
-  {collection: 'productInfo'},
+  { collection: "productInfo" },
   { timestamps: true }
 );
 module.exports = mongoose.model("productInfo", productDetailSchema);
