@@ -14,6 +14,8 @@ const {
 
 const userSignupModel = require("../model/userSignModel");
 
+
+//Encrypt password
 class UserSignUp {
   userSignup = async (userDetails) => {
     let errorList = [];
