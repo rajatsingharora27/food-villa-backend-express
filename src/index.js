@@ -5,6 +5,7 @@ const bodyParser=require("body-parser")
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const log=require("./config/logger")
 
 
 const startServer =async () => {
@@ -18,7 +19,7 @@ const startServer =async () => {
         useUnifiedTopology: true
     }
 );
-console.log("connected to db")
+log.info("Connected to the DATABASE")
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -27,7 +28,10 @@ console.log("connected to db")
 
   app.use("/food-villa", apiRouter);
   app.listen(port, () => {
-    console.log(`listning to ${port}`);
+    log.info(`Listing to the ${port}`)
+    log.info("****************************************************************")
+    log.info("********FOOD_VILLA MICROSERVICE STARTED*************************")
+    log.info("****************************************************************")
   });
 };
 

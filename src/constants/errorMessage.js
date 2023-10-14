@@ -10,7 +10,8 @@ module.exports={
     INVALID_EMAIL_FORMAT_0006_2:") is in incorrect format ",
     USER_ALREADY_EXIST_0007_1:"ER0007::CriticalThe user with email ID (",
     USER_ALREADY_EXIST_0007_2:") already exist with us.",
-    USER_NAME_IS_NESSARY_0008:"ER0008::Critical) userName is required Filed."
+    USER_NAME_IS_NESSARY_0008:"ER0008::Critical) userName is required Filed.",
+    USER_NAME_IS_NESSARY_0009:"ER0009::Critical) passoword is required Filed."
 
 
 

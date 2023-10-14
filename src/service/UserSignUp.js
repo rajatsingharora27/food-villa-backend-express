@@ -1,50 +1,87 @@
-const { FALSE, TRUE } = require("../constants/applicationConstants");
+const { FALSE, TRUE, USER_ROLE } = require("../constants/applicationConstants");
 const {
   INVALID_EMAIL_FORMAT_0006_2,
   INVALID_EMAIL_FORMAT_0006_1,
   USER_ALREADY_EXIST_0007_2,
   USER_ALREADY_EXIST_0007_1,
+  USER_NAME_IS_NESSARY_0009,
+  USER_NAME_IS_NESSARY_0008,
 } = require("../constants/errorMessage");
 
 const {
   USER_SUCCESSFULLY_SIGNED_UP_0002_1,
-  USER_SUCCESSFULLY_SIGNED_UP_0002_2
-}=require("../constants/informationaMessage")
-
+  USER_SUCCESSFULLY_SIGNED_UP_0002_2,
+} = require("../constants/informationaMessage");
+const bcrypt = require("bcrypt");
+const saltRounds = process.env.SALT_ROUNDS;
+const log = require("../config/logger");
 
 const userSignupModel = require("../model/userSignModel");
+var jwt = require("jsonwebtoken");
 
-
-//Encrypt password
 class UserSignUp {
-  userSignup = async (userDetails) => {
+  userSignup = async (userDetails, refId) => {
+    log.info(`{userSignUp() started, refID ,${refId}}`);
     let errorList = [];
-    const [isValidaEmailId, isValidName, isAlreadyEmailNotInDb] =
-      await Promise.all([
+    try {
+      const [
+        isValidaEmailId,
+        isValidName,
+        isAlreadyEmailNotInDb,
+        isValidPassword,
+      ] = await Promise.all([
         this.#validateEmail(userDetails.emailId, errorList),
         this.#validateUserName(userDetails.userName, errorList),
         this.#validateUserInDB(userDetails.emailId, errorList),
+        this.#validatePassword(userDetails.password, errorList),
       ]);
 
-    if (isValidaEmailId && isValidName && isAlreadyEmailNotInDb) {
-      const userObject ={
-        userName:userDetails.userName,
-        email:userDetails.emailId,
-        password:userDetails.password,
-        phoneNumber:userDetails.phoneNumber
+      if (
+        isValidaEmailId &&
+        isValidName &&
+        isAlreadyEmailNotInDb &&
+        isValidPassword
+      ) {
+        const userObject = {
+          userName: userDetails.userName,
+          email: userDetails.emailId,
+          password: userDetails.password,
+          phoneNumber: userDetails.phoneNumber,
+          password: this.#generateHashPassword(userDetails.password),
+          role: USER_ROLE,
+        };
+        const user = await userSignupModel.create(userObject);
+        user.save();
+        //generate JWT token
+
+        const token = this.#generateJWTtoken(userObject);
+
+        log.info(
+          `user added successfully ${userObject.email} , refID ,${refId}}`
+        );
+        return {
+          isValid: TRUE,
+          errorList: errorList,
+          message: [
+            USER_SUCCESSFULLY_SIGNED_UP_0002_1 +
+              userDetails.emailId +
+              USER_SUCCESSFULLY_SIGNED_UP_0002_2,
+          ],
+          token,
+        };
+      } else {
+        log.info(`Error adding user ${userDetails.emailId} , refID ,${refId}}`);
+        return {
+          isValid: FALSE,
+          errorList: errorList,
+          message: [],
+        };
       }
-      const user = await userSignupModel.create(userObject);
-      user.save();
-      return {
-        isValid: TRUE,
-        errorList: errorList,
-        message: [
-          USER_SUCCESSFULLY_SIGNED_UP_0002_1 +
-            userDetails.emailId +
-            USER_SUCCESSFULLY_SIGNED_UP_0002_2,
-        ],
-      };
-    } else {
+    } catch (ex) {
+      log.error(
+        `Exception occurred while adding user refId:${refId}  ,ex:${ex}`
+      );
+
       return {
         isValid: FALSE,
         errorList: errorList,
@@ -66,10 +103,10 @@ class UserSignUp {
     return TRUE;
   }
 
-   async #validateUserInDB(emailId, errorList) {
-    const userDetail = await userSignupModel.find({email:emailId})
-    console.log(userDetail)
-    if (userDetail == null || userDetail.length==0) {
+  async #validateUserInDB(emailId, errorList) {
+    const userDetail = await userSignupModel.find({ email: emailId });
+    console.log(userDetail);
+    if (userDetail == null || userDetail.length == 0) {
       return TRUE;
     } else {
       errorList.push(
@@ -85,6 +122,33 @@ class UserSignUp {
       return FALSE;
     }
     return TRUE;
+  }
+
+  #validatePassword(password, errorList) {
+    if (password == null || password.trim().length == 0) {
+      errorList.push(USER_NAME_IS_NESSARY_0009);
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  #generateHashPassword(passoword) {
+    const hash = bcrypt.hashSync(passoword, parseInt(saltRounds));
+    return hash;
+  }
+
+  #generateJWTtoken(userObject) {
+    return jwt.sign(
+      {
+        data: {
+          userName: userObject.userName,
+          email: userObject.email,
+          role: userObject.role,
+        },
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "2 days" }
+    );
   }
 }
 
