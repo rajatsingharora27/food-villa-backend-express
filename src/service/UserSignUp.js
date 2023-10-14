@@ -17,7 +17,8 @@ const saltRounds = process.env.SALT_ROUNDS;
 const log = require("../config/logger");
 
 const userSignupModel = require("../model/userSignModel");
-var jwt = require("jsonwebtoken");
+const {jwtToken} =require("../utils/utilMethods")
+
 
 class UserSignUp {
   userSignup = async (userDetails, refId) => {
@@ -51,14 +52,15 @@ class UserSignUp {
           role: USER_ROLE,
         };
         const user = await userSignupModel.create(userObject);
-        user.save();
+  
         //generate JWT token
-
-        const token = this.#generateJWTtoken(userObject);
+        const token = jwtToken(userObject);
 
         log.info(
           `user added successfully ${userObject.email} , refID ,${refId}}`
         );
+        //Svae user in db when token is ready
+        user.save();
         return {
           isValid: TRUE,
           errorList: errorList,
@@ -137,19 +139,19 @@ class UserSignUp {
     return hash;
   }
 
-  #generateJWTtoken(userObject) {
-    return jwt.sign(
-      {
-        data: {
-          userName: userObject.userName,
-          email: userObject.email,
-          role: userObject.role,
-        },
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "2 days" }
-    );
-  }
+  // #generateJWTtoken(userObject) {
+  //   return jwt.sign(
+  //     {
+  //       data: {
+  //         userName: userObject.userName,
+  //         email: userObject.email,
+  //         role: userObject.role,
+  //       },
+  //     },
+  //     process.env.JWT_SECRET,
+  //     { expiresIn: "2 days" }
+  //   );
+  // }
 }
 
 module.exports = UserSignUp;

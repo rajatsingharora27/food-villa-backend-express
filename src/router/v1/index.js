@@ -3,7 +3,8 @@ const router = express.Router();
 const {
   ProductCreationController,
   SignUpController,
-  SignInController
+  SignInController,
+  WishListController
 
 } = require("../../controller/index");
 
@@ -12,6 +13,7 @@ const {verifyUserSignUpDetailMiddleWare}=require("../../middlewares/userSignIn")
 const productCreateController = new ProductCreationController();
 const signUpController=new SignUpController();
 const signInController=new SignInController();
+const wishListController=new WishListController();
 // const dataEngineController = new DataEngineController();
 
 
@@ -23,6 +25,7 @@ router.post("/sign-in",verifyUserSignUpDetailMiddleWare,signInController.signInU
 
 //Product Relate API
 router.post("/add-product", productCreateController.addNewProduct);
+router.post("/add-wishlist",verifyUserSignUpDetailMiddleWare,wishListController.addToUserWishList)
 
 
 module.exports = router;

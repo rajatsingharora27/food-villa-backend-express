@@ -2,15 +2,16 @@ const {AddProductService} =require("../service/index")
 const {StatusCodes}=require("http-status-codes")
 const { v4: uuidv4 } = require('uuid');
 
-const refid=uuidv4();
+
 class ProductCreationController {
 
   addProductService = new AddProductService();
 
   addNewProduct = async (req, res) => {
+    const refid=uuidv4();
     try {
       console.log(refid);
-      const prductAddedResponse= await this.addProductService.addProduct(req.body);
+      const prductAddedResponse= await this.addProductService.addProduct(req.body,refid);
       console.log(prductAddedResponse)
       return res.status(StatusCodes.OK).json({
         refid:refid,

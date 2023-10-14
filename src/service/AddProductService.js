@@ -12,9 +12,12 @@ const {
   PRODUCT_SAVED_IN_DATABASE_0001,
   PRODUCT_SAVED_IN_DATABASE_0001_1,
 } = require("../constants/informationaMessage");
+const { v4: uuidv4} = require('uuid');
+
 
 class AddProductService {
-  addProduct = async (productData) => {
+
+  addProduct = async (productData,refId) => {
     try {
       let errorList = [];
       const [
@@ -41,8 +44,8 @@ class AddProductService {
         isValidProductAlreadyInInventory
       ) {
         //SAVE PRODCUT IN DATABSE
-   
-        const newProduct =await productDetails.create(productData);
+        const PID=uuidv4();
+        const newProduct =await productDetails.create({...productData , productId:`${PID}`});
         newProduct.save()
         return {
           isValid: TRUE,

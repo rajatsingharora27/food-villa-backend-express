@@ -4,6 +4,12 @@ const Schema = mongoose.Schema;
 
 const productDetailSchema = new Schema(
   {
+    productId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     productName: {
       type: String,
       required: true,
