@@ -1,15 +1,15 @@
-const { UserSignIn } = require("../service/index");
-const { StatusCodes } = require("http-status-codes");
-const { v4: uuidv4 } = require("uuid");
-const log = require("../config/logger");
+import UserSignIn  from "../service/UserSignIn";
+import StatusCodes  from "http-status-codes";
+import {v4 as uuidV4} from 'uuid';
+import log from "../config/logger";
 
 
-const refid = uuidv4();
+const refid = uuidV4();
 
 class SignInController {
   userSignIn = new UserSignIn();
 
-  signInUser = async (req, res) => {
+  signInUser = async (req:any, res:any) => {
     try {
       log.info(`{signInUser()} started ,refID:${res.userData.refId}`);
       console.log(res.userData);
@@ -26,4 +26,5 @@ class SignInController {
   };
 }
 
-module.exports = SignInController;
+// module.exports = SignInController;
+export default SignInController;

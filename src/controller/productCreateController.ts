@@ -1,6 +1,6 @@
 import AddProductService from "../service/AddProductService"
 import StatusCodes from "http-status-codes"
-const { v4: uuidv4 } = require('uuid');
+import {v4 as uuidV4} from 'uuid';
 
 
 class ProductCreationController {
@@ -8,7 +8,7 @@ class ProductCreationController {
   addProductService = new AddProductService();
 
   addNewProduct = async (req :any, res :any) => {
-    const refid=uuidv4();
+    const refid=uuidV4();
     try {
       console.log(refid);
       const prductAddedResponse= await this.addProductService.addProduct(req.body,refid);

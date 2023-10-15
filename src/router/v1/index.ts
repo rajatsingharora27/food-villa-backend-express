@@ -9,19 +9,20 @@ const router = express.Router();
 // } from "../../controller/index";
 
 import ProductCreationController from "../../controller/productCreateController"
+import SignInController from "../../controller/signInController"
 
-// const {verifyUserSignUpDetailMiddleWare}=require("../../middlewares/userSignIn")
+import {verifyUserDetails} from "../../middlewares/userSignIn"
 
 const productCreateController = new ProductCreationController();
 // const signUpController=new SignUpController();
-// const signInController=new SignInController();
+const signInController=new SignInController();
 // const wishListController=new WishListController();
 // const dataEngineController = new DataEngineController();
 
 
 //SIGN UP and Sign in user and Authentication of the user 
 // router.post("/sign-up",signUpController.addNewUser);
-// router.post("/sign-in",verifyUserSignUpDetailMiddleWare,signInController.signInUser)
+router.post("/sign-in",verifyUserDetails,signInController.signInUser)
 
 
 
