@@ -16,6 +16,13 @@ const signInController=new SignInController();
 const wishListController=new WishListController();
 // const dataEngineController = new DataEngineController();
 
+/**
+ * @swagger
+ * /api/v1/sign-up
+ * post:
+ *    summary:user sign up
+*/
+
 
 //SIGN UP and Sign in user and Authentication of the user 
 router.post("/sign-up",signUpController.addNewUser);
