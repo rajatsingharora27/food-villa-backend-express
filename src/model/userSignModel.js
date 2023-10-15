@@ -4,6 +4,11 @@ const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
   {
+    userId: {
+      type: String,
+      required: true,
+    },
+
     userName: {
       type: String,
       required: true,
@@ -19,11 +24,11 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    role:{
+    role: {
       type: String,
-      enum : ['user','admin'],
-      default: 'user'
-    }
+      enum: ["user", "admin"],
+      default: "user",
+    },
   },
   {
     collection: "registerUser",

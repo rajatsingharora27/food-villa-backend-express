@@ -18,7 +18,7 @@ const log = require("../config/logger");
 
 const userSignupModel = require("../model/userSignModel");
 const {jwtToken} =require("../utils/utilMethods")
-
+const { v4: uuidv4} = require('uuid');
 
 class UserSignUp {
   userSignup = async (userDetails, refId) => {
@@ -43,6 +43,7 @@ class UserSignUp {
         isAlreadyEmailNotInDb &&
         isValidPassword
       ) {
+        const UID=uuidv4();
         const userObject = {
           userName: userDetails.userName,
           email: userDetails.emailId,
@@ -51,7 +52,7 @@ class UserSignUp {
           password: this.#generateHashPassword(userDetails.password),
           role: USER_ROLE,
         };
-        const user = await userSignupModel.create(userObject);
+        const user = await userSignupModel.create({...userObject,userId:UID});
   
         //generate JWT token
         const token = jwtToken(userObject);
