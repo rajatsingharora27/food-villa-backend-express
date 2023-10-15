@@ -1,18 +1,18 @@
-const { FALSE, TRUE } = require("../constants/applicationConstants");
-const userWishListModel = require("../model/userWishListModel");
-const wishListModel = require("../model/userWishListModel");
-const log = require("../config/logger");
-const { PRODUCT_ADDED_TO_WISH_LIST_0004_2, PRODUCT_ADDED_TO_WISH_LIST_0004_1 } = require("../constants/informationaMessage");
+// const { false, true } = require("../constants/applicationConstants");
+import  userWishListModel from "../model/userWishListModel";
+// const wishListModel = require("../model/userWishListModel");
+import log from "../config/logger";
+// const { PRODUCT_ADDED_TO_WISH_LIST_0004_2, PRODUCT_ADDED_TO_WISH_LIST_0004_1 } = require("../constants/informationaMessage");
 
 class UserWishListService {
-  addToWishList = async (req, userDetailsFromUserInfoModel, refId) => {
-    let errorList=[];
+  addToWishList = async (req:any, userDetailsFromUserInfoModel:any, refId:string) => {
+    let errorList:Array<String>=[];
     try {
       //check if user is present in whish list model
       log.info(`{addToWishList() method started refId: ${refId}}`);
 
       //Finding the user from "userWishlists" database
-      const userWishlistDetails = await wishListModel.findOne({
+      const userWishlistDetails = await userWishListModel.findOne({
         email: req.emailId,
       });
      
@@ -28,7 +28,7 @@ class UserWishListService {
           wishlistItem: [
             {
               product: req.productId,
-              isPurchased: FALSE,
+              isPurchased: false,
             },
           ],
         };
@@ -57,7 +57,8 @@ class UserWishListService {
           //new item is there to be added in wishList
           currentWishListItemsUserHave.push({
             product: req.productId,
-            isPurchased: FALSE,
+            //@ts-ignore
+            isPurchased: false,
           });
           listOfItemsToBeAddedInWishList=currentWishListItemsUserHave;
         }
@@ -68,7 +69,7 @@ class UserWishListService {
         log.info(`Product added to the wishlist  productId:${req.productId} , refId:${refId}`)
       }
       return {
-        isValid: TRUE,
+        isValid: true,
         errorList: errorList,
         message: [
            "wishList updated"
@@ -78,7 +79,7 @@ class UserWishListService {
     }catch(ex){
         log.error(`Excption occurred  {addToWishList()} refId:${refId} , ex:${ex}`)
         return {
-            isValid: FALSE,
+            isValid: false,
             errorList: errorList,
             message: [
                "Product cannot be adde to wishlist"
@@ -90,4 +91,4 @@ class UserWishListService {
   };
 }
 
-module.exports = UserWishListService;
+export default UserWishListService;
