@@ -1,5 +1,5 @@
-const {AddProductService} =require("../service/index")
-const {StatusCodes}=require("http-status-codes")
+import AddProductService from "../service/AddProductService"
+import StatusCodes from "http-status-codes"
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -7,7 +7,7 @@ class ProductCreationController {
 
   addProductService = new AddProductService();
 
-  addNewProduct = async (req, res) => {
+  addNewProduct = async (req :any, res :any) => {
     const refid=uuidv4();
     try {
       console.log(refid);
@@ -15,9 +15,9 @@ class ProductCreationController {
       console.log(prductAddedResponse)
       return res.status(StatusCodes.OK).json({
         refid:refid,
-        message:prductAddedResponse.message,
+        message:prductAddedResponse?.message,
         data:{},
-        error:prductAddedResponse.errorList
+        error:prductAddedResponse?.errorList
       })
     } catch (ex) {
       console.log(ex)
@@ -25,4 +25,5 @@ class ProductCreationController {
   };
 }
 
-module.exports = ProductCreationController;
+// module.exports = ProductCreationController;
+export default ProductCreationController;

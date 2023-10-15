@@ -14,7 +14,8 @@ const CATEGORY = "FOOD-VILLA APPLICATION";
 //     silly: 6
 //   };
 
-const loggingFormat = printf(({ level, message, label, timestamp }) => {
+//@ts-ignore
+const loggingFormat = printf(({ level ,message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
@@ -24,4 +25,5 @@ const logger = createLogger({
   transports: [new transports.Console()],
 });
 
-module.exports = logger;
+// module.exports = logger;
+export default logger;

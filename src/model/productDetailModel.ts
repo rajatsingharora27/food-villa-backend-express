@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const Schema = mongoose.Schema;
 
@@ -39,13 +39,12 @@ const productDetailSchema = new Schema(
       ingredients: { type: String },
       allergens: { type: String },
     },
-    festiveTag:{
-      type:String,
-      required:true
-    }
+    festiveTag: {
+      type: String,
+      required: true,
+    },
   },
 
-  { collection: "productInfo" },
-  { timestamps: true }
+  { collection: "productInfo", timestamps: true }
 );
-module.exports = mongoose.model("productInfo", productDetailSchema);
+export default mongoose.model("productInfo", productDetailSchema);
