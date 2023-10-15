@@ -27,11 +27,11 @@ class AddProductService {
         isValidInventory,
         isValidProductAlreadyInInventory,
       ] = await Promise.all([
-        this.#validateName(productData.productName, errorList),
-        this.#validateProductDetails(productData.productDetails, errorList),
-        this.#validatePrice(productData.productPrice, errorList),
-        this.#validInventory(productData.inventory, errorList),
-        this.#validProductAlreadyInInventory(
+        this.validateName(productData.productName, errorList),
+        this.validateProductDetails(productData.productDetails, errorList),
+        this.validatePrice(productData.productPrice, errorList),
+        this.validInventory(productData.inventory, errorList),
+        this.validProductAlreadyInInventory(
           productData.productName,
           errorList
         ),
@@ -79,7 +79,7 @@ class AddProductService {
     // console.log(details.productName);
   };
 
-  #validateName(productName:any, errorList:any) {
+  private validateName(productName:any, errorList:any) {
     if (productName == null) {
       // errorList.push(EMPTY_PRODUCT_NAME_0001);
       errorList.push("empty name")
@@ -88,7 +88,7 @@ class AddProductService {
     return true;
   }
 
-  #validateProductDetails(productDetail:any, errorList:any) {
+  private validateProductDetails(productDetail:any, errorList:any) {
     if (productDetail == null) {
       // errorList.push(PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002);
       errorList.push("details empty");
@@ -97,7 +97,7 @@ class AddProductService {
     return true;
   }
 
-  #validatePrice(price:any, errorList:any) {
+  private validatePrice(price:any, errorList:any) {
     if (price == null) {
       // errorList.push(PRICE_CANNOT_BE_EMPTY_0003);
       errorList.push("empty price");
@@ -106,7 +106,7 @@ class AddProductService {
     return true;
   }
 
-  #validInventory(inventory:any, errorList:any) {
+  private validInventory(inventory:any, errorList:any) {
     if (inventory == null) {
       // errorList.push(INVENTORY_CANNOT_BE_EMPTY_0004);
       errorList.push("Inventory empty");
@@ -115,7 +115,7 @@ class AddProductService {
     return true;
   }
 
-  async #validProductAlreadyInInventory(productName:any, errorList:any) {
+  private async validProductAlreadyInInventory(productName:any, errorList:any) {
     if (productName == null) {
       // errorList.push(PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002);
       errorList.push("ProductDetails Empty");
