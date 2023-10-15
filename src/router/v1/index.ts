@@ -10,18 +10,19 @@ const router = express.Router();
 
 import ProductCreationController from "../../controller/productCreateController"
 import SignInController from "../../controller/signInController"
+import SignUpController from "../../controller/signUpController";
 
 import {verifyUserDetails} from "../../middlewares/userSignIn"
 
 const productCreateController = new ProductCreationController();
-// const signUpController=new SignUpController();
+const signUpController=new SignUpController();
 const signInController=new SignInController();
 // const wishListController=new WishListController();
 // const dataEngineController = new DataEngineController();
 
 
 //SIGN UP and Sign in user and Authentication of the user 
-// router.post("/sign-up",signUpController.addNewUser);
+router.post("/sign-up",signUpController.addNewUser);
 router.post("/sign-in",verifyUserDetails,signInController.signInUser)
 
 

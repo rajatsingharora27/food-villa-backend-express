@@ -1,29 +1,30 @@
-const { FALSE, TRUE, USER_ROLE } = require("../constants/applicationConstants");
-const {
-  INVALID_EMAIL_FORMAT_0006_2,
-  INVALID_EMAIL_FORMAT_0006_1,
-  USER_ALREADY_EXIST_0007_2,
-  USER_ALREADY_EXIST_0007_1,
-  USER_NAME_IS_NESSARY_0009,
-  USER_NAME_IS_NESSARY_0008,
-} = require("../constants/errorMessage");
+// const { false, true, USER_ROLE } = require("../constants/applicationConstants");
+// const {
+//   INVALID_EMAIL_FORMAT_0006_2,
+//   INVALID_EMAIL_FORMAT_0006_1,
+//   USER_ALREADY_EXIST_0007_2,
+//   USER_ALREADY_EXIST_0007_1,
+//   USER_NAME_IS_NESSARY_0009,
+//   USER_NAME_IS_NESSARY_0008,
+// } = require("../constants/errorMessage");
 
-const {
-  USER_SUCCESSFULLY_SIGNED_UP_0002_1,
-  USER_SUCCESSFULLY_SIGNED_UP_0002_2,
-} = require("../constants/informationaMessage");
-const bcrypt = require("bcrypt");
-const saltRounds = process.env.SALT_ROUNDS;
-const log = require("../config/logger");
+// const {
+//   USER_SUCCESSFULLY_SIGNED_UP_0002_1,
+//   USER_SUCCESSFULLY_SIGNED_UP_0002_2,
+// } = require("../constants/informationaMessage");
+import bcrypt from "bcrypt";
 
-const userSignupModel = require("../model/userSignModel");
-const {jwtToken} =require("../utils/utilMethods")
-const { v4: uuidv4} = require('uuid');
+import log from "../config/logger";
+
+import userSignupModel from "../model/userSignModel";
+import { generateJWTtoken } from "../utils/utilMethods";
+import { v4 as uuidV4 } from "uuid";
+
 
 class UserSignUp {
-  userSignup = async (userDetails, refId) => {
+  userSignup = async (userDetails: any, refId: any) => {
     log.info(`{userSignUp() started, refID ,${refId}}`);
-    let errorList = [];
+    let errorList: Array<string> = [];
     try {
       const [
         isValidaEmailId,
@@ -37,25 +38,29 @@ class UserSignUp {
         this.#validatePassword(userDetails.password, errorList),
       ]);
 
+      
       if (
         isValidaEmailId &&
         isValidName &&
         isAlreadyEmailNotInDb &&
         isValidPassword
       ) {
-        const UID=uuidv4();
+        const UID = uuidV4();
+        
         const userObject = {
           userName: userDetails.userName,
           email: userDetails.emailId,
-          password: userDetails.password,
           phoneNumber: userDetails.phoneNumber,
           password: this.#generateHashPassword(userDetails.password),
-          role: USER_ROLE,
+          role: "user",
         };
-        const user = await userSignupModel.create({...userObject,userId:UID});
-  
+        const user = await userSignupModel.create({
+          ...userObject,
+          userId: UID,
+        });
+
         //generate JWT token
-        const token = jwtToken(userObject);
+        const token = generateJWTtoken(userObject);
 
         log.info(
           `user added successfully ${userObject.email} , refID ,${refId}}`
@@ -63,19 +68,19 @@ class UserSignUp {
         //Svae user in db when token is ready
         user.save();
         return {
-          isValid: TRUE,
+          isValid: true,
           errorList: errorList,
           message: [
-            USER_SUCCESSFULLY_SIGNED_UP_0002_1 +
+            "USER_SUCCESSFULLY_SIGNED_UP_0002_1" +
               userDetails.emailId +
-              USER_SUCCESSFULLY_SIGNED_UP_0002_2,
+              "USER_SUCCESSFULLY_SIGNED_UP_0002_2",
           ],
           token,
         };
       } else {
         log.info(`Error adding user ${userDetails.emailId} , refID ,${refId}}`);
         return {
-          isValid: FALSE,
+          isValid: false,
           errorList: errorList,
           message: [],
         };
@@ -86,57 +91,67 @@ class UserSignUp {
       );
 
       return {
-        isValid: FALSE,
+        isValid: false,
         errorList: errorList,
         message: [],
       };
     }
   };
 
-  #validateEmail(email, errorList) {
+  #validateEmail(email: string, errorList: Array<string>) {
     const emailRegEx = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/;
 
     if (!emailRegEx.test(email)) {
       errorList.push(
-        INVALID_EMAIL_FORMAT_0006_1 + email,
-        INVALID_EMAIL_FORMAT_0006_2
+        "INVALID_EMAIL_FORMAT_0006_1" + email,
+        "INVALID_EMAIL_FORMAT_0006_2"
       );
-      return FALSE;
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
-  async #validateUserInDB(emailId, errorList) {
+  async #validateUserInDB(emailId: string, errorList: Array<string>) {
     const userDetail = await userSignupModel.find({ email: emailId });
     console.log(userDetail);
     if (userDetail == null || userDetail.length == 0) {
-      return TRUE;
+      return true;
     } else {
       errorList.push(
-        USER_ALREADY_EXIST_0007_1 + emailId + USER_ALREADY_EXIST_0007_2
+        "USER_ALREADY_EXIST_0007_1" + emailId + "USER_ALREADY_EXIST_0007_2"
       );
-      return FALSE;
+      return false;
     }
   }
 
-  #validateUserName(name, errorList) {
+  #validateUserName(name: string, errorList: Array<string>) {
     if (name == null) {
-      errorList.push(USER_NAME_IS_NESSARY_0008);
-      return FALSE;
+      errorList.push("USER_NAME_IS_NESSARY_0008");
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
-  #validatePassword(password, errorList) {
+  #validatePassword(password: string, errorList: Array<string>) {
     if (password == null || password.trim().length == 0) {
-      errorList.push(USER_NAME_IS_NESSARY_0009);
-      return FALSE;
+      errorList.push("USER_NAME_IS_NESSARY_0009");
+      return false;
     }
-    return TRUE;
+    return true;
   }
 
-  #generateHashPassword(passoword) {
-    const hash = bcrypt.hashSync(passoword, parseInt(saltRounds));
+  #generateHashPassword(passoword: string) {
+    const saltRounds=process.env.SALT_ROUNDS;
+    console.log(saltRounds)
+    let hash: string = "";
+    try {
+      if (saltRounds != null && saltRounds != undefined) {
+        hash = bcrypt.hashSync(passoword, parseInt(saltRounds));
+      }
+    } catch (ex) {
+      log.error(`Exception occurred {generateHashPassword()} ${ex}`);
+    }
+
     return hash;
   }
 
@@ -155,4 +170,4 @@ class UserSignUp {
   // }
 }
 
-module.exports = UserSignUp;
+export default UserSignUp;

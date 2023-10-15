@@ -1,13 +1,13 @@
-const { UsertSignUp } = require("../service/index");
-const { StatusCodes } = require("http-status-codes");
-const { v4: uuidv4 } = require("uuid");
-const log = require("../config/logger");
+import UsertSignUp from "../service/UserSignUp";
+import StatusCodes  from "http-status-codes";
+import {v4 as uuidV4} from 'uuid';
+import log from "../config/logger";
 
-const refid = uuidv4();
+const refid = uuidV4();
 class SignUpController {
   userSignUp = new UsertSignUp();
 
-  addNewUser = async (req, res) => {
+  addNewUser = async (req:any, res:any) => {
     try {
       log.info(`{addNewUser()} started ,refID:${refid}`);
       const userSignUp = await this.userSignUp.userSignup(req.body, refid);
@@ -23,4 +23,4 @@ class SignUpController {
   };
 }
 
-module.exports = SignUpController;
+export default SignUpController;
