@@ -1,25 +1,29 @@
 import  productDetails from "../model/productDetailModel";
-// const {
-//   EMPTY_PRODUCT_NAME_0001,
-//   PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002,
-//   PRICE_CANNOT_BE_EMPTY_0003,
-//   INVENTORY_CANNOT_BE_EMPTY_0004,
-//   PRODUCT_ALREADY_IN_DATABASE_0005,
-//   PRODUCT_ALREADY_IN_DATABASE_0005_1,
-// } = require("../constants/errorMessage");
-// const { true, false } = require("../constants/applicationConstants");
-// const {
-//   PRODUCT_SAVED_IN_DATABASE_0001,
-//   PRODUCT_SAVED_IN_DATABASE_0001_1,
-// } = require("../constants/informationaMessage");
-const { v4: uuidv4} = require('uuid');
 
+import  { TRUE, FALSE } from "../constants/applicationConstants";
+import {
+  PRODUCT_SAVED_IN_DATABASE_0001,
+  PRODUCT_SAVED_IN_DATABASE_0001_1,
+} from "../constants/informationaMessage";
+
+import {  EMPTY_PRODUCT_NAME_0001,
+  PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002,
+  PRICE_CANNOT_BE_EMPTY_0003,
+  INVENTORY_CANNOT_BE_EMPTY_0004,
+  PRODUCT_ALREADY_IN_DATABASE_0005,
+  PRODUCT_ALREADY_IN_DATABASE_0005_1} from "../constants/errorMessage"
+
+
+import {v4 as uuidv4} from 'uuid';
+import {ProductType} from "../Types/ProductType"
+import log from "../config/logger"
 
 class AddProductService {
 
-  addProduct = async (productData:any,refId:string) => {
+  addProduct = async (productData:ProductType,refId:string) => {
     try {
-      let errorList:any = [];
+      log.info(`addProduct() started refId:${refId}`);
+      let errorList:Array<string> = [];
       const [
         isValidName,
         isValidProductDetails,
@@ -48,19 +52,19 @@ class AddProductService {
         const newProduct =await productDetails.create({...productData , productId:`${PID}`});
         newProduct.save()
         return {
-          isValid: true,
+          isValid: TRUE,
           errorList: errorList,
           message: [
-            // PRODUCT_SAVED_IN_DATABASE_0001 +
-            //   productData.productName +
-            //   PRODUCT_SAVED_IN_DATABASE_0001_1,
+            PRODUCT_SAVED_IN_DATABASE_0001 +
+              productData.productName +
+              PRODUCT_SAVED_IN_DATABASE_0001_1,
 
-            "product saved"
+       
           ],
         };
       } else {
         return {
-          isValid: false,
+          isValid: FALSE,
           errorList: errorList,
           message:[]
         };
@@ -81,45 +85,45 @@ class AddProductService {
 
   private validateName(productName:any, errorList:any) {
     if (productName == null) {
-      // errorList.push(EMPTY_PRODUCT_NAME_0001);
-      errorList.push("empty name")
-      return false;
+      errorList.push(EMPTY_PRODUCT_NAME_0001);
+    
+      return FALSE;
     }
-    return true;
+    return TRUE;
   }
 
   private validateProductDetails(productDetail:any, errorList:any) {
     if (productDetail == null) {
-      // errorList.push(PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002);
-      errorList.push("details empty");
-      return false;
+      errorList.push(PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002);
+    
+      return FALSE;
     }
-    return true;
+    return TRUE;
   }
 
   private validatePrice(price:any, errorList:any) {
     if (price == null) {
-      // errorList.push(PRICE_CANNOT_BE_EMPTY_0003);
-      errorList.push("empty price");
-      return false;
+      errorList.push(PRICE_CANNOT_BE_EMPTY_0003);
+ 
+      return FALSE;
     }
-    return true;
+    return TRUE;
   }
 
   private validInventory(inventory:any, errorList:any) {
     if (inventory == null) {
-      // errorList.push(INVENTORY_CANNOT_BE_EMPTY_0004);
-      errorList.push("Inventory empty");
-      return false;
+      errorList.push(INVENTORY_CANNOT_BE_EMPTY_0004);
+   
+      return FALSE;
     }
-    return true;
+    return TRUE;
   }
 
   private async validProductAlreadyInInventory(productName:any, errorList:any) {
     if (productName == null) {
-      // errorList.push(PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002);
-      errorList.push("ProductDetails Empty");
-      return false;
+      errorList.push(PRODUCT_DETAILS_CANNOT_BE_EMPTY_0002);
+     
+      return FALSE;
     } else {
       const isProductAlreadyPresent = await productDetails.findOne({
         productName: productName,
@@ -127,15 +131,15 @@ class AddProductService {
 
       if (isProductAlreadyPresent !== null) {
         errorList.push(
-          // PRODUCT_ALREADY_IN_DATABASE_0005 +
-          //   isProductAlreadyPresent.productName +
-          //   PRODUCT_ALREADY_IN_DATABASE_0005_1
+          PRODUCT_ALREADY_IN_DATABASE_0005 +
+            isProductAlreadyPresent.productName +
+            PRODUCT_ALREADY_IN_DATABASE_0005_1
 
-          "product not added"
+        
         );
-        return false;
+        return FALSE;
       } else {
-        return true;
+        return TRUE;
       }
     }
   }
