@@ -9,10 +9,11 @@ on UI user CLICK on add-to-wish list
     -if token not present in local-session
         -request to sign in the user
             -if user not found
-                -make user to sign up to add to wishlist
+                -make user to sign up to add to wishlist and return the user
             -else user found
                 -send the user token
-                -and all the wishlist item user already has
+                -and all the wishlist item user already has + the new item that is added
+                        -if the added item is already in used presius added list return the list as it is
 
 // add-to-wish list (when token is present)
 On UI user CLICK again to add someOther item to wishlist
@@ -67,6 +68,8 @@ On UI +/- on cart item
                 - if yes 
                     -add : increse the quantiy as per user sent value + already what was there
                     -sub : original - derease the quantiy as per value sent >= 0
+                else NO (item not presnt and user select new one)
+                    -add the new item to cart and return all the update cart(new + old items from db)
 
                     Apply Dbouncing on UI to make less api call on product increse and decrease api
                     MAKE FALSE APPASE ON API TO TELL USER AT TIME BEING AND update AFTER SOME TIME IN BACKEND
