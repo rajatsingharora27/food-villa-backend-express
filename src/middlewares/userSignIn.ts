@@ -11,6 +11,9 @@ const refid = uuidv4();
 
 export const verifyUserDetails = async (req:any, res:any, next:any) => {
   try {
+    if(req.cartOrWishlist === "W"){
+      
+    }
     const user = await userSignupModel.findOne({ email: req.body.emailId });
     if (user == null) {
       return res.status(StatusCodes.NOT_FOUND).json({

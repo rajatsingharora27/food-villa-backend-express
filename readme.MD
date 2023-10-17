@@ -72,6 +72,44 @@ On UI +/- on cart item
                     MAKE FALSE APPASE ON API TO TELL USER AT TIME BEING AND update AFTER SOME TIME IN BACKEND
 
 
+// SEND FESTIVE PRODUCT
+
+     body - { tag: "diwali"}
+        send all produt of diwali tag
+        response: {
+            top_items:[{}],
+            all_tems:[{}]
+        }
+
+// SEND ON CATEGORY
+    body - {category :"CAKEs"}
+
+    send all the prodcut of cakes
+        respone:{
+            all_items:[{}]
+        }
+
+
+// PAYMENT METHOD
+
+
+
+
+
+//ADD PRODUCT WITH IMAGE
+
+
+
+
+************** BASIC CRUD API ****************
+// UPDATE PRODUCT
+
+
+// DELETE PRODUCT
+
+
+
+// ADD ITEM IN BULK
 
 
 
