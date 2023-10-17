@@ -44,20 +44,20 @@ class UserWishListService {
         let listOfItemsToBeAddedInWishList = [];
 
         const listIfItemIsAlreadyThere = currentWishListItemsUserHave.filter(
-          (item) => item.product != req.productId
+          (item:any) => item.product != req.productId
         );
         if (
           listIfItemIsAlreadyThere.length !==
           currentWishListItemsUserHave.length
         ) {
-          // it the list of wishlist product and filted item are not same
+          // it the list of wishlist productnd filted item are not same
           //means user wants to remove from wish list
           listOfItemsToBeAddedInWishList = listIfItemIsAlreadyThere;
         } else {
           //new item is there to be added in wishList
+          //@ts-ignore
           currentWishListItemsUserHave.push({
             product: req.productId,
-            //@ts-ignore
             isPurchased: false,
           });
           listOfItemsToBeAddedInWishList=currentWishListItemsUserHave;

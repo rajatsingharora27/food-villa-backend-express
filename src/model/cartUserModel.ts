@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { UserWishList } from "../Types/WislistType";
 
 const Schema = mongoose.Schema;
 
-const wishListSchema = new Schema<UserWishList>(
+const userCartDetailsSchema = new Schema(
   {
     userId: {
       type: String,
@@ -13,7 +12,8 @@ const wishListSchema = new Schema<UserWishList>(
       type: String,
       unique: true,
     },
-    wishlistItem: [
+
+    cartItem: [
       {
         product: {
           type: String,
@@ -21,6 +21,9 @@ const wishListSchema = new Schema<UserWishList>(
           isPurchased: {
             type: Boolean,
             default: false,
+          },
+          quantity: {
+            type: Number,
           },
         },
       },
@@ -30,4 +33,5 @@ const wishListSchema = new Schema<UserWishList>(
     timestamps: true,
   }
 );
-export default mongoose.model("userWishlist", wishListSchema);
+
+export default mongoose.model("userCart", userCartDetailsSchema);

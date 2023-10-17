@@ -1,8 +1,8 @@
 import  jwt from "jsonwebtoken" ;
 
 export const generateJWTtoken = (userObject:any) => {
-
-if( !process.env.JWT_SECRET && process.env.JWT_SECRET!==undefined ){
+console.log(userObject)
+if( process.env.JWT_SECRET && process.env.JWT_SECRET!==undefined ){
     return jwt.sign(
       {
         data: {

@@ -2,10 +2,11 @@ import userSignupModel from "../model/userSignModel";
 import  StatusCodes from "http-status-codes";
 import  { v4 as uuidv4 } from "uuid";
 import log from "../config/logger";
-// const {
-//   USER_NOT_FOUND_0010_1,
-//   USER_NOT_FOUND_0010_2,
-// } = require("../constants/errorMessage");
+import {
+  USER_NOT_FOUND_0010_1,
+  USER_NOT_FOUND_0010_2,
+}
+from "../constants/errorMessage";
 const refid = uuidv4();
 
 export const verifyUserDetails = async (req:any, res:any, next:any) => {
@@ -16,7 +17,7 @@ export const verifyUserDetails = async (req:any, res:any, next:any) => {
         refid: refid,
         message: {},
         data: {},
-        error: "USER_NOT_FOUND_0010_1" + req.body.emailId + "USER_NOT_FOUND_0010_2",
+        error: USER_NOT_FOUND_0010_1 + req.body.emailId + USER_NOT_FOUND_0010_2,
       });
     }else{
         let obj={
@@ -33,7 +34,7 @@ export const verifyUserDetails = async (req:any, res:any, next:any) => {
       refid: refid,
       message: {},
       data: {},
-      error: "USER_NOT_FOUND_0010_1" + req.body.emailId + "USER_NOT_FOUND_0010_2",
+      error: USER_NOT_FOUND_0010_1 + req.body.emailId + USER_NOT_FOUND_0010_2,
     });
   }
 };
