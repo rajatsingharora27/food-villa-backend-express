@@ -11,13 +11,14 @@ class AddProductToCartOrWishListController {
     const refid = uuidV4();
     try {
       console.log(refid);
-      const prductAddedResponse = await this.addProductToCartOrWishList.addProduct(req.body, refid);
+      const prductAddedResponse =
+        await this.addProductToCartOrWishList.addProduct(req.body, refid);
       console.log(prductAddedResponse);
       return res.status(StatusCodes.OK).json({
         refid: refid,
-        // message: prductAddedResponse?.message,
+        message: prductAddedResponse?.message,
         data: {},
-        // error: prductAddedResponse?.errorList,
+        error: prductAddedResponse?.errorList,
       });
     } catch (ex) {
       log.error(ex);

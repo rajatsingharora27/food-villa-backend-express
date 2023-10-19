@@ -20,7 +20,6 @@ import userSignupModel from "../model/userSignModel";
 import { generateJWTtoken } from "../utils/utilMethods";
 import { v4 as uuidV4 } from "uuid";
 
-
 class UserSignUp {
   userSignup = async (userDetails: any, refId: any) => {
     log.info(`{userSignUp() started, refID ,${refId}}`);
@@ -38,7 +37,6 @@ class UserSignUp {
         this.#validatePassword(userDetails.password, errorList),
       ]);
 
-      
       if (
         isValidaEmailId &&
         isValidName &&
@@ -46,18 +44,16 @@ class UserSignUp {
         isValidPassword
       ) {
         const UID = uuidV4();
-        
+
         const userObject = {
           userName: userDetails.userName,
           email: userDetails.emailId,
           phoneNumber: userDetails.phoneNumber,
           password: this.#generateHashPassword(userDetails.password),
           role: "user",
-        };
-        const user = await userSignupModel.create({
-          ...userObject,
           userId: UID,
-        });
+        };
+        const user = await userSignupModel.create(userObject);
 
         //generate JWT token
         const token = generateJWTtoken(userObject);
@@ -87,7 +83,7 @@ class UserSignUp {
       }
     } catch (ex) {
       log.error(
-        `Exception occurred while adding user refId:${refId}  ,ex:${ex}`
+        `Exception occurred while adding user {{userSignup()}} refId:${refId}  ,ex:${ex}`
       );
 
       return {
@@ -141,8 +137,8 @@ class UserSignUp {
   }
 
   #generateHashPassword(passoword: string) {
-    const saltRounds=process.env.SALT_ROUNDS;
-    console.log(saltRounds)
+    const saltRounds = process.env.SALT_ROUNDS;
+    console.log(saltRounds);
     let hash: string = "";
     try {
       if (saltRounds != null && saltRounds != undefined) {

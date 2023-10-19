@@ -16,6 +16,11 @@ export interface C_W_ProdcutAdd{
   email:string,
   productId:string,
   cartOrWishlist:string,
+  productToCartQuantity:{
+    quantity:number,
+    increase:boolean,
+    decrease:boolean
+  },
   token:string
 
 }
@@ -25,6 +30,7 @@ export interface JwtTokenType{
     userName:string,
     email:string,
     role:string,
+    userId:string
   },
   iat:number,
   exp:number,

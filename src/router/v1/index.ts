@@ -36,6 +36,8 @@ router.post("/sign-in",verifyUserDetails,signInController.signInUser)
 router.post("/add-product", productCreateController.addNewProduct);
 router.post("/add-wishlist",verifyUserDetails,wishListController.addToUserWishList)
 router.post("/add-cart",userCartController.addToCartList);
+
+//second time when user is signed in and has a token, this api will be called to add in cart or wishlist
 router.post("/add-cw-product",verifyAddProdutToWishLsitOrCartRequestMiddleWare,addProductController.addProductToCartController);
 
 

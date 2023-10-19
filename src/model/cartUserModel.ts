@@ -18,13 +18,13 @@ const userCartDetailsSchema = new Schema(
         product: {
           type: String,
           ref: "productInfo", // Reference to the Product model
-          isPurchased: {
-            type: Boolean,
-            default: false,
-          },
-          quantity: {
-            type: Number,
-          },
+        },
+        isPurchased: {
+          type: Boolean,
+          default: false,
+        },
+        quantity: {
+          type: Number,
         },
       },
     ],

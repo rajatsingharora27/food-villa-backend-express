@@ -9,11 +9,12 @@ import userWishListModel from "../model/userWishListModel";
 import cartUserModel from "../model/cartUserModel";
 import productDetailModel from "../model/productDetailModel";
 import { UserWishList, WishListOfUser } from "../Types/WislistType";
+import { TokenInformationType } from "../Types/TokenInformation";
 
 class UserSignIn {
   userSignin = async (
     userData: any,
-    dataFromMiddleWare: UserReposneFromMiddleWare,
+    dataFromMiddleWare: TokenInformationType,
     refId: string
   ) => {
     try {

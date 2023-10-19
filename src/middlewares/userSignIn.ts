@@ -12,9 +12,6 @@ const refid = uuidv4();
 
 export const verifyUserDetails = async (req: Request, res: any, next: any) => {
   try {
-    // if(req.cartOrWishlist === "W"){
-
-    // }
     const user = await userSignupModel.findOne({ email: req.body.emailId });
     if (user == null) {
       return res.status(StatusCodes.NOT_FOUND).json({
@@ -61,6 +58,7 @@ export const verifyAddProdutToWishLsitOrCartRequestMiddleWare = async (
   //reutrn to sign up
   if (requestBody.token.trim()== "") {
      const user = await userSignupModel.findOne({ email: requestBody.email });
+     log.info(`{{verifyAddProdutToWishLsitOrCartRequestMiddleWare()}}  started refId:${refid}  `)
      if (user == null) {
       return res.status(StatusCodes.NOT_FOUND).json({
         refid: refid,
