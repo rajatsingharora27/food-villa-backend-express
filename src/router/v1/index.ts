@@ -13,13 +13,16 @@ import SignInController from "../../controller/signInController"
 import SignUpController from "../../controller/signUpController";
 import WishListController from "../../controller/userWishList";
 import UserCartistController from "../../controller/userCartList";
-import {verifyUserDetails} from "../../middlewares/userSignIn"
+import {verifyAddProdutToWishLsitOrCartRequestMiddleWare, verifyUserDetails} from "../../middlewares/userSignIn"
+
+import AddProductToCartOrWishListController from "../../controller/addProductTocartOrWishList";
 
 const productCreateController = new ProductCreationController();
 const signUpController=new SignUpController();
 const signInController=new SignInController();
 const wishListController=new WishListController();
 const userCartController=new UserCartistController();
+const addProductController=new AddProductToCartOrWishListController();
 // const dataEngineController = new DataEngineController();
 
 
@@ -32,7 +35,8 @@ router.post("/sign-in",verifyUserDetails,signInController.signInUser)
 //Product Relate API
 router.post("/add-product", productCreateController.addNewProduct);
 router.post("/add-wishlist",verifyUserDetails,wishListController.addToUserWishList)
-router.post("/add-cart",userCartController.addToCartList)
+router.post("/add-cart",userCartController.addToCartList);
+router.post("/add-cw-product",verifyAddProdutToWishLsitOrCartRequestMiddleWare,addProductController.addProductToCartController);
 
 
 // module.exports = router;

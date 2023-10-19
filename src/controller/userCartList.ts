@@ -13,8 +13,10 @@ class UserCartistController {
  //If not a signed in user store details in the UI seerion and 
  // connect to backend in case of the payment
  addToCartList = async (req:Request, res:Response) => {
+  console.log("req===>",req);
    try {
      log.info(`{addToCartList()} started ,refID:${refid}`);
+     console.log(req)
      const userCartList= await this.userCartListService.addToCartList(req.params.productId, res,refid);
      return res.status(StatusCodes.OK).json({
        refid: refid,
