@@ -31,11 +31,7 @@ class SignInController {
       console.log(data);
       log.info(`{signInUser()} started ,refID:${refId}`);
       // console.log(data.user);
-      const userSignIn = await this.userSignIn.userSignin(
-        req.body,
-        extractedInformationOfUser,
-        data.refId
-      );
+      const userSignIn = await this.userSignIn.userSignin(req.body, extractedInformationOfUser, data.refId);
       //@ts-ignore
       return res.status(StatusCodes.OK).json({
         refid: extractedInformationOfUser.refId,

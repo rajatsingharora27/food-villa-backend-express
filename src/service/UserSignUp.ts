@@ -19,30 +19,21 @@ import log from "../config/logger";
 import userSignupModel from "../model/userSignModel";
 import { generateJWTtoken } from "../utils/utilMethods";
 import { v4 as uuidV4 } from "uuid";
+import cartUserModel from "../model/cartUserModel";
 
 class UserSignUp {
   userSignup = async (userDetails: any, refId: any) => {
     log.info(`{userSignUp() started, refID ,${refId}}`);
     let errorList: Array<string> = [];
     try {
-      const [
-        isValidaEmailId,
-        isValidName,
-        isAlreadyEmailNotInDb,
-        isValidPassword,
-      ] = await Promise.all([
+      const [isValidaEmailId, isValidName, isAlreadyEmailNotInDb, isValidPassword] = await Promise.all([
         this.#validateEmail(userDetails.emailId, errorList),
         this.#validateUserName(userDetails.userName, errorList),
         this.#validateUserInDB(userDetails.emailId, errorList),
         this.#validatePassword(userDetails.password, errorList),
       ]);
 
-      if (
-        isValidaEmailId &&
-        isValidName &&
-        isAlreadyEmailNotInDb &&
-        isValidPassword
-      ) {
+      if (isValidaEmailId && isValidName && isAlreadyEmailNotInDb && isValidPassword) {
         const UID = uuidV4();
 
         const userObject = {
@@ -54,23 +45,23 @@ class UserSignUp {
           userId: UID,
         };
         const user = await userSignupModel.create(userObject);
+        if (userDetails.cartItems != null && userDetails.cartItems.length != 0) {
+          const userCartDetail = await cartUserModel.find({ email: userDetails.emailId });
+          if (userCartDetail == null) {
+            cartUserModel.create();
+          }
+        }
 
         //generate JWT token
         const token = generateJWTtoken(userObject);
 
-        log.info(
-          `user added successfully ${userObject.email} , refID ,${refId}}`
-        );
+        log.info(`user added successfully ${userObject.email} , refID ,${refId}}`);
         //Svae user in db when token is ready
         user.save();
         return {
           isValid: true,
           errorList: errorList,
-          message: [
-            "USER_SUCCESSFULLY_SIGNED_UP_0002_1" +
-              userDetails.emailId +
-              "USER_SUCCESSFULLY_SIGNED_UP_0002_2",
-          ],
+          message: ["USER_SUCCESSFULLY_SIGNED_UP_0002_1" + userDetails.emailId + "USER_SUCCESSFULLY_SIGNED_UP_0002_2"],
           token,
         };
       } else {
@@ -82,9 +73,7 @@ class UserSignUp {
         };
       }
     } catch (ex) {
-      log.error(
-        `Exception occurred while adding user {{userSignup()}} refId:${refId}  ,ex:${ex}`
-      );
+      log.error(`Exception occurred while adding user {{userSignup()}} refId:${refId}  ,ex:${ex}`);
 
       return {
         isValid: false,
@@ -98,10 +87,7 @@ class UserSignUp {
     const emailRegEx = /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}/;
 
     if (!emailRegEx.test(email)) {
-      errorList.push(
-        "INVALID_EMAIL_FORMAT_0006_1" + email,
-        "INVALID_EMAIL_FORMAT_0006_2"
-      );
+      errorList.push("INVALID_EMAIL_FORMAT_0006_1" + email, "INVALID_EMAIL_FORMAT_0006_2");
       return false;
     }
     return true;
@@ -113,9 +99,7 @@ class UserSignUp {
     if (userDetail == null || userDetail.length == 0) {
       return true;
     } else {
-      errorList.push(
-        "USER_ALREADY_EXIST_0007_1" + emailId + "USER_ALREADY_EXIST_0007_2"
-      );
+      errorList.push("USER_ALREADY_EXIST_0007_1" + emailId + "USER_ALREADY_EXIST_0007_2");
       return false;
     }
   }

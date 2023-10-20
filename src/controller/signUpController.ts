@@ -1,13 +1,13 @@
 import UsertSignUp from "../service/UserSignUp";
-import StatusCodes  from "http-status-codes";
-import {v4 as uuidV4} from 'uuid';
+import StatusCodes from "http-status-codes";
+import { v4 as uuidV4 } from "uuid";
 import log from "../config/logger";
 
 const refid = uuidV4();
 class SignUpController {
   userSignUp = new UsertSignUp();
 
-  addNewUser = async (req:any, res:any) => {
+  addNewUser = async (req: any, res: any) => {
     try {
       log.info(`{addNewUser()} started ,refID:${refid}`);
       const userSignUp = await this.userSignUp.userSignup(req.body, refid);

@@ -39,29 +39,31 @@ class UserSignIn {
           this.getUserCartDetils(dataFromMiddleWare),
         ]);
 
-        
-
-        let wishListProductList: Array<string>=[];
+        let wishListProductList: Array<string> = [];
         let cartListProduct: Array<string> = [];
 
         if (userWishListDetails !== null) {
-          wishListProductList = userWishListDetails.wishlistItem.map((ele: any) => {
+          wishListProductList = userWishListDetails.wishlistItem.map(
+            (ele: any) => {
+              return ele.product;
+            }
+          );
+        }
+        if (userCartDetails !== null) {
+          cartListProduct = userCartDetails.cartItem.map((ele: any) => {
             return ele.product;
           });
         }
 
-        
-
-        const[wishlist]=await Promise.all([
-        this.getAllWishListProductItems(wishListProductList),
-        // this.getAllCartProductItems(userCartDetails)
+        const [wishlist, cartList] = await Promise.all([
+          this.getAllWishListAndCartProduct(wishListProductList),
+          this.getAllWishListAndCartProduct(cartListProduct),
         ]);
-        
 
-        const responseDataTosend={
-          token:token,
-          wishlist:wishlist
-        }
+        const responseDataTosend = {
+          token: token,
+          wishlist: wishlist,
+        };
 
         return {
           isValid: TRUE,
@@ -96,10 +98,15 @@ class UserSignIn {
     return cartUserModel.findOne({ email: userData.email });
   }
 
-  private getAllWishListProductItems(userWishListProduct:Array<String>){
-    console.log("in fucntion")
-    return productDetailModel.find({ productId: { $in: userWishListProduct } })
+  private getAllWishListAndCartProduct(userWishListProduct: Array<String>) {
+    console.log("in fucntion");
+    return productDetailModel.find({ productId: { $in: userWishListProduct } });
   }
+
+  // private getAllCartProductItems(userWishListProduct:Array<String>){
+  //   console.log("in fucntion")
+  //   return productDetailModel.find({ productId: { $in: userWishListProduct } })
+  // }
 }
 
 // module.exports = UserSignIn;
