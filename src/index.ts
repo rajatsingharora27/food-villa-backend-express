@@ -29,19 +29,12 @@ const startServer = async () => {
       });
   }
 
-  // await mongoose.connect(process.env.MONGODB_URI, {
-  //   useNewUrlParser: true,
-  //   useUnifiedTopology: true,
-  // });
-
-  // log.info("Connected to the DATABASE");
-
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(cors());
   dotenv.use;
 
-  // app.use("/food-villa", apiRouter);
+  app.use("/food-villa", apiRouter);
   app.listen(port, () => {
     log.info(`Listing to the ${port}`);
     log.info("****************************************************************");

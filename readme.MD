@@ -128,8 +128,8 @@ requetBody
 username,
 email,
 password,
-cartitems:[],
-wishlistItems:[]
+cartitems:[{productId, quantity}],
+wishlistItems:[productId]
 }
 
 - if not
@@ -188,6 +188,28 @@ findWishListDerails(emai, userId),
 
 2.  Add to wish List
 
+    #User not signed in - request body{
+    userEmail,
+    userName,
+    password,
+    cartItems:[{
+    productId,
+    quantity
+    }]
+    wishListItem: ""
+    }
+
+        - check in db is user is there
+            -if no register user
+                - put the cartItem and wish list item from the request to db
+                    - (if cart items are there)
+            if user is present in wish list document
+                - add wish list item to list
+                -if the cart item is not empty
+                    - then check if the same product is there of not
+                        -if yes then incemnt the value
+                        -else add new product
+
     #Signed In user adding in wish list
     If user is signedIn (Means Token is present in local or session storage)
 
@@ -217,7 +239,7 @@ findWishListDerails(emai, userId),
 3.  ADD TO CART
 
 #Sigend in user
-ReqBody
+ReqBody - > when user click - or + button on ui (use debouncing there)
 {
 token,
 productId,
@@ -286,3 +308,9 @@ Form Token:
 6. UPDATE PRODUCT
 
 7. STORE THE ORDER DETAIL WHEN ORDERED IS PLACED
+
+8. DELETE USER
+   - when we delete the user
+     - delete the wish list and cart aswell
+
+USERID for user generated will be same in cartItem and wish list Item for that user

@@ -40,3 +40,14 @@
 // // module.exports = router;
 
 // export default router
+
+import express from "express";
+const router = express.Router();
+import SignUpController from "../../controller/signUpController";
+import verifyUserDetails from "../../middlewares/verifyUserDetails";
+
+const signUpController = new SignUpController();
+
+router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
+
+export default router;

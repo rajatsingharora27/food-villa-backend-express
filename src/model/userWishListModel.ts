@@ -1,9 +1,8 @@
 import mongoose from "mongoose";
-import { UserWishList } from "../Types/WislistType";
 
 const Schema = mongoose.Schema;
 
-const wishListSchema = new Schema<UserWishList>(
+const wishListSchema = new Schema(
   {
     userId: {
       type: String,
@@ -18,10 +17,6 @@ const wishListSchema = new Schema<UserWishList>(
         product: {
           type: String,
           ref: "productInfo", // Reference to the Product model
-          isPurchased: {
-            type: Boolean,
-            default: false,
-          },
         },
       },
     ],
