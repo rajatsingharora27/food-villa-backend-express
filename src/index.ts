@@ -3,14 +3,11 @@ import apiRouter from "./router/index";
 import bodyParser from "body-parser";
 import cors from "cors";
 import mongoose from "mongoose";
-import log  from "./config/logger";
+import log from "./config/logger";
 const dotenv = require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
 const app = express();
-
-
-
 
 const startServer = async () => {
   const port = process.env.PORT;
@@ -22,13 +19,14 @@ const startServer = async () => {
   if (!mongoUri) {
     console.error("MONGODB_URI environment variable is not defined.");
   } else {
-    mongoose.connect(mongoUri)
-    .then(() => {
-     log.info("Connected to MongoDB");
-    })
-    .catch((error) => {
-      log.error("MongoDB connection error:", error);
-    });
+    mongoose
+      .connect(mongoUri)
+      .then(() => {
+        log.info("Connected to MongoDB");
+      })
+      .catch((error) => {
+        log.error("MongoDB connection error:", error);
+      });
   }
 
   // await mongoose.connect(process.env.MONGODB_URI, {
@@ -43,18 +41,12 @@ const startServer = async () => {
   app.use(cors());
   dotenv.use;
 
-  app.use("/food-villa", apiRouter);
+  // app.use("/food-villa", apiRouter);
   app.listen(port, () => {
     log.info(`Listing to the ${port}`);
-    log.info(
-      "****************************************************************"
-    );
-    log.info(
-      "********FOOD_VILLA MICROSERVICE STARTED*************************"
-    );
-    log.info(
-      "****************************************************************"
-    );
+    log.info("****************************************************************");
+    log.info("********FOOD_VILLA MICROSERVICE STARTED*************************");
+    log.info("****************************************************************");
   });
 };
 

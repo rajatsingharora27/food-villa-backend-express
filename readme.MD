@@ -82,7 +82,7 @@ body - {category :"CAKEs"}
 
 //ADD PRODUCT WITH IMAGE
 
-******\*\******* BASIC CRUD API ******\*\*\*\*******
+**\*\***\*\***\*\*** BASIC CRUD API **\*\***\*\*\*\***\*\***
 // UPDATE PRODUCT
 
 // DELETE PRODUCT
@@ -117,32 +117,47 @@ wihslistOrCart: indicator value "W" or "C"
                 product id
             }
 
+<!-- ======================================================================================================== -->
+
+TOKEN -> email , name , userId ,role
+
 Sign up - check if the email is already present in data base - if present send
-"USER ALREADY REGISTERED" - if not
-make the document for the user - if at that time user has some item in the cart or the wishlist also store them in the database
+"USER ALREADY REGISTERED"
+requetBody
+{
+username,
+email,
+password,
+cartitems:[],
+wishlistItems:[]
+}
 
-                if user is not present
-                requestBody,
-                {
-                    username
-                    email
-                    password
-                    phone number
-                    cartItems[],
-                    wishlistItems[]
-                }
+- if not
+  make the document for the user - if at that time user has some item in the cart or the wishlist also store them in the database
 
-                responseBody:{
-                    refId:,
-                    message:[],
-                    responeBody:{
-                        token:,
-                        email,
-                        userId,
-                        cartItems[],
-                        wishlistItems[]
-                    }
-                }
+                  if user is not present
+                  requestBody,
+                  {
+                      username
+                      email
+                      password
+                      phone number
+                      cartItems[],
+                      wishlistItems[]
+                  }
+
+
+                  responseBody:{
+                      refId:,
+                      message:[],
+                      responeBody:{
+                          token:,
+                          email,
+                          userId,
+                          cartItems[],
+                          wishlistItems[]
+                      }
+                  }
 
 Sign in
 
@@ -160,7 +175,114 @@ Sign in
             message:[],
             responseData:{
                 token:,
+                userRole,
                 cartDetails:[],
                 wishlistDetails:[]
             }
         }
+
+common Method is to find the detils of user from cart and wishlist model in both the sign up and sign in - make a common method.
+
+findCartDetils( email, userId)
+findWishListDerails(emai, userId),
+
+2.  Add to wish List
+
+    #Signed In user adding in wish list
+    If user is signedIn (Means Token is present in local or session storage)
+
+        requestBody :{
+           token,
+           productId
+        }
+
+    LOGIC:
+    if this the firt product added by user in wish list i.e no record of user in wishlist table
+    -make document
+    {
+    username,
+    userEmail,
+    wishlist:[]
+    productId,
+    isPurchased:boolean
+
+    }
+
+        if for the user is already in wishlist table
+
+            check if the product id is already there
+                - if there then remove from wish list
+                - if new product it is then add in wish list
+
+3.  ADD TO CART
+
+#Sigend in user
+ReqBody
+{
+token,
+productId,
+quantity:number,
+incrementOrDecrement: 1->increment , 0->decrement
+}
+
+    - Logic
+        - if not user is prenet in userCartTable
+            document :{
+                usernName,
+                userId,
+                cartItem:[]
+            }
+        if alredy present
+            get CartItem and get the list
+                if new poduct add the product in the cartItem list
+                else increse or decrese accordingly
+
+4.  ADD PRODUCT API (only Admin can do this )
+
+    To add the product - sign in the user - if admin then allow the user to add the product
+
+    requestBody
+    { - same as in post man - product image:[] - token -> in header
+    }
+
+    -> verify token
+    #if token is valid - if user is admin then move middle ware forward - else error message
+
+    responseBody
+    {
+    refId:,
+    message:[],
+    responseBody:{
+    productName,
+    productId,
+
+        }
+
+    }
+
+    Model
+    {
+    all that is already there - productImage:[]  
+     }
+
+    productImageTable
+
+5.  DELET PRODUCT (ONLY ADMIN CAN DELETE)
+
+reqBody
+{
+productId:
+token:
+}
+
+Form Token:
+
+# get If token is valid
+
+            - if valid then check role,
+                if admin delete the product
+            else error
+
+6. UPDATE PRODUCT
+
+7. STORE THE ORDER DETAIL WHEN ORDERED IS PLACED
