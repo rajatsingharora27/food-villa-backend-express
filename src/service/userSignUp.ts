@@ -178,6 +178,7 @@ class UserSignUpService {
         phoneNumber: req.phoneNumber,
         password: generateHashPassword(req.password),
         role: USER_ROLE,
+        hasAdminAccess: false,
       };
       const userSignUp = await userSignModel.create(userObject);
       userSignUp.save();

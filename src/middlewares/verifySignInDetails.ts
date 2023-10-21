@@ -2,25 +2,24 @@ import { NextFunction, Request, Response } from "express";
 import { CART_ITEM_TYPE, SIGNUP_USER, VALIDATION_RETURN_VALUE } from "../Types/DataTypes";
 import logger from "../config/logger";
 import { v4 as uuidV4 } from "uuid";
-
 import StatusCodes from "http-status-codes";
 import { verifiedEmail, verifiedName, verifyPassword, verifyRegistedUser } from "../utils/utilMethods";
 
-const verifyUserDetails = async (req: Request, res: Response, next: NextFunction) => {
+const verifyUserSignInDetails = async (req: Request, res: Response, next: NextFunction) => {
   let errorList: Array<string> = [];
   const reqBody: SIGNUP_USER = req.body;
   const refid = uuidV4();
   try {
-    logger.info(`{verifyUserDetails()} middleware started , refId:${refid}`);
+    logger.info(`{verifyUserSignInDetails()} middleware started , refId:${refid}`);
 
-    const [verifyUserName, verifyUserEmai, isUserAlredyRegistered, isValidPassword] = await Promise.all([
-      verifiedName(reqBody.userName, errorList),
+    // isUserAlredyRegistered
+    const [verifyUserEmai, isValidPassword] = await Promise.all([
       verifiedEmail(reqBody.emailId, errorList),
-      verifyRegistedUser(reqBody.emailId, errorList),
+      //   verifyRegistedUser(reqBody.emailId, errorList),
       verifyPassword(reqBody.password, errorList),
     ]);
 
-    if (verifyUserName.isValid && verifyUserEmai.isValid && isUserAlredyRegistered.isValid && isValidPassword.isValid) {
+    if (verifyUserEmai.isValid && isValidPassword.isValid) {
       res.locals.refid = refid;
 
       next();
@@ -34,9 +33,9 @@ const verifyUserDetails = async (req: Request, res: Response, next: NextFunction
       data: {},
     });
   } catch (ex) {
-    logger.error(`Exception occurred in verifyUserDetails  error:${ex}`);
-    throw new Error(`Exception occurred in verifyUserDetails  error:${ex}`);
+    logger.error(`Exception occurred in verifyUserSignInDetails  error:${ex}`);
+    throw new Error(`Exception occurred in verifyUserSignInDetails  error:${ex}`);
   }
 };
 
-export default verifyUserDetails;
+export default verifyUserSignInDetails;

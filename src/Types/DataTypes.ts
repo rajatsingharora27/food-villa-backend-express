@@ -15,6 +15,7 @@ export interface CART_ITEM_TYPE {
 export interface VALIDATION_RETURN_VALUE {
   isValid: boolean;
   error: Array<string>;
+  data?: Object | null;
 }
 
 export interface TokenInformationType {

@@ -5,6 +5,7 @@ import { generateHashPassword, generateJWTtoken } from "../utils/utilMethods";
 import logger from "../config/logger";
 import { API_RESPONSE } from "../Types/APIResponse";
 import { USER_SUCCESSFULLY_ADMIN_CREATED_0004_1 } from "../constants/informationaMessage";
+import { ADMIN_ROLE } from "../constants/applicationConstants";
 
 class AdminAllocateService {
   registerAdmin = async (inputRequest: TokenInformationType, refId: string): Promise<API_RESPONSE> => {
@@ -17,7 +18,8 @@ class AdminAllocateService {
         email: inputRequest.emailId,
         phoneNumber: inputRequest.phoneNumber,
         password: generateHashPassword(inputRequest.password),
-        role: "admin",
+        role: ADMIN_ROLE,
+        hasAdminAccess: true,
       };
       console.log(adminObject);
       await userSignModel.create(adminObject);

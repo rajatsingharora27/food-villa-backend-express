@@ -29,6 +29,10 @@ const userSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    hasAdminAccess: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     collection: "registerUser",
