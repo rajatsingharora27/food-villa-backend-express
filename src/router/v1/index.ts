@@ -46,11 +46,15 @@ const router = express.Router();
 import SignUpController from "../../controller/signUpController";
 import verifyUserDetails from "../../middlewares/verifyUserDetails";
 import AdminAllocate from "../../controller/allocateAdmin";
+import { verifyAdminUser } from "../../middlewares/verifyAdmin";
+import DeleteUserContoller from "../../controller/deleteUserController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
+const deleteUserController = new DeleteUserContoller();
 
 router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
 
+router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
 export default router;

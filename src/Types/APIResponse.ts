@@ -14,3 +14,9 @@ export interface ProductAndQuantity {
   product: string;
   quantity: number;
 }
+
+export interface VALIDATION_RESPONSE {
+  isValid: boolean;
+  message: [string];
+  data: {};
+}

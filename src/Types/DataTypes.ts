@@ -34,3 +34,12 @@ export interface UserInputRequest {
   password: string;
   role: string;
 }
+
+export interface DECODE_TOKEN {
+  userName: string;
+  role: string;
+  email: string;
+  userId: string;
+  iat?: number;
+  exp?: number;
+}
