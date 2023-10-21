@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 import { TokenInformationType } from "../Types/DataTypes";
+import bcrypt from "bcrypt";
+import logger from "../config/logger";
 
 export const generateJWTtoken = (userObject: TokenInformationType) => {
   console.log(userObject);
@@ -9,7 +11,7 @@ export const generateJWTtoken = (userObject: TokenInformationType) => {
         data: {
           userName: userObject.userName,
           userId: userObject.userId,
-          email: userObject.email,
+          email: userObject.emailId,
           role: userObject.role,
         },
       },
@@ -17,4 +19,19 @@ export const generateJWTtoken = (userObject: TokenInformationType) => {
       { expiresIn: "2 days" }
     );
   }
+};
+
+export const generateHashPassword = (passoword: string) => {
+  const saltRounds = process.env.SALT_ROUNDS;
+  console.log(saltRounds);
+  let hash: string = "";
+  try {
+    if (saltRounds != null && saltRounds != undefined) {
+      hash = bcrypt.hashSync(passoword, parseInt(saltRounds));
+    }
+  } catch (ex) {
+    logger.error(`Exception occurred {generateHashPassword()} ${ex}`);
+  }
+
+  return hash;
 };

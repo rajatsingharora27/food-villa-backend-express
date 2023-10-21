@@ -4,10 +4,9 @@ import userSignModel from "../model/userSignModel";
 import userWishListModel from "../model/userWishListModel";
 import cartUserModel from "../model/cartUserModel";
 import { v4 as uuidV4 } from "uuid";
-import bcrypt from "bcrypt";
 import { USER_ROLE } from "../constants/applicationConstants";
-import { generateJWTtoken } from "../utils/utilMethods";
-import { API_RESPONSE } from "../Types/APIResponse";
+import { generateHashPassword, generateJWTtoken } from "../utils/utilMethods";
+import { API_RESPONSE, ResponseData } from "../Types/APIResponse";
 
 class UserSignUpService {
   userSignUp = async (req: SIGNUP_USER, refid: string): Promise<API_RESPONSE> => {
@@ -33,21 +32,26 @@ class UserSignUpService {
       if (addUserDB.isTrue && addWishList.isTrue && addCartList?.isTrue) {
         const tokenObject: TokenInformationType = {
           userName: req.userName,
-          email: req.emailId,
+          emailId: req.emailId,
           phoneNumber: req.phoneNumber,
           password: req.password,
           role: "user",
           userId: userId,
         };
         const token = generateJWTtoken(tokenObject);
+
+        let data: ResponseData = {
+          token: token,
+          //@ts-ignore
+          wishListItem: addWishList.data,
+          //@ts-ignore
+          cartItems: addCartList.data.cartItem,
+        };
+
         return {
           refId: refid,
           message: errorList,
-          data: {
-            token,
-            wishList: addWishList.data,
-            cartList: addCartList.data,
-          },
+          data: data,
         };
       }
       return {
@@ -70,7 +74,8 @@ class UserSignUpService {
     try {
       const userWishList = await userWishListModel.findOne({ email: emailId });
       //user is not present already
-      let userWishListObject: Object;
+      let userWishListObject;
+      let allWishListUpdateItems;
       if (userWishList == null) {
         userWishListObject = {
           userId: userId,
@@ -82,11 +87,17 @@ class UserSignUpService {
         wishListAdded.save();
         isTrue = true;
         logger.info("product added to wish list table");
+
+        allWishListUpdateItems = userWishListObject.wishlistItem;
       } else {
         let set = new Set();
+
+        //data from sb get alla the product list of wishlist and add to set
         userWishList.wishlistItem.forEach((ele) => {
           set.add(ele.product);
         });
+
+        // passed by user to add in wishlist and add to the set
         if (isUserWithWishList != undefined) {
           isUserWithWishList.forEach((ele) => {
             set.add(ele);
@@ -99,13 +110,18 @@ class UserSignUpService {
         //   emailId: emailId,
         //   wishlistItem: arr,
         // };
-        await userWishListModel.updateOne({ userId: userId }, { $set: { wishlistItem: arr } });
+        const items = await userWishListModel.updateOne({ userId: userId }, { $set: { wishlistItem: arr } });
         isTrue = true;
         logger.info("wish list updated");
+        allWishListUpdateItems = arr;
       }
+      const wishLitData = allWishListUpdateItems?.map((ele: any) => {
+        return ele.product;
+      });
+
       return {
         isTrue,
-        data: userWishList,
+        data: wishLitData,
         message: errorList,
       };
     } catch (ex) {
@@ -160,7 +176,7 @@ class UserSignUpService {
         userName: req.userName,
         email: req.emailId,
         phoneNumber: req.phoneNumber,
-        password: this.generateHashPassword(req.password),
+        password: generateHashPassword(req.password),
         role: USER_ROLE,
       };
       const userSignUp = await userSignModel.create(userObject);
@@ -180,21 +196,6 @@ class UserSignUpService {
         message: [`Exception occurred in {registreUser} refId:${refid} , ex: ${ex}`],
       };
     }
-  }
-
-  private generateHashPassword(passoword: string) {
-    const saltRounds = process.env.SALT_ROUNDS;
-    console.log(saltRounds);
-    let hash: string = "";
-    try {
-      if (saltRounds != null && saltRounds != undefined) {
-        hash = bcrypt.hashSync(passoword, parseInt(saltRounds));
-      }
-    } catch (ex) {
-      logger.error(`Exception occurred {generateHashPassword()} ${ex}`);
-    }
-
-    return hash;
   }
 }
 

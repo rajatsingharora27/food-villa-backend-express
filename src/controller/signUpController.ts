@@ -13,13 +13,36 @@ class SignUpController {
       const refId = res.locals.refid;
       const userSignUp: API_RESPONSE = await this.userSignUp.userSignUp(req.body, refId);
       console.log(userSignUp);
-      res.status(StatusCodes.OK).json({
+      let data = this.generateResponseData(userSignUp);
+      console.log(data);
+      return res.status(StatusCodes.OK).json({
         refId,
         message: userSignUp.message,
-        data: userSignUp.data,
+        data,
       });
-    } catch {}
+    } catch (ex) {
+      logger.error(`${ex}`);
+    }
   };
+
+  generateResponseData(userSignUp: API_RESPONSE) {
+    const token = userSignUp.data.token;
+    let wishlistItems = userSignUp.data.wishListItem?.map((ele) => {
+      return ele;
+    });
+    let cartItems = userSignUp.data.cartItems?.map((ele) => {
+      return {
+        productId: ele.product,
+        quantity: ele.quantity,
+      };
+    });
+
+    return {
+      token,
+      wishlistItems,
+      cartItems,
+    };
+  }
 }
 
 export default SignUpController;

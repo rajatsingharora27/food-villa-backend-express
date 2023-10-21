@@ -4,4 +4,13 @@ export interface API_RESPONSE {
   data: ResponseData;
 }
 
-export interface ResponseData {}
+export interface ResponseData {
+  token?: string;
+  cartItems?: Array<ProductAndQuantity>;
+  wishListItem?: Array<string>;
+}
+
+export interface ProductAndQuantity {
+  product: string;
+  quantity: number;
+}

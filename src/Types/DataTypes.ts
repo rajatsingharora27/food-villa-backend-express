@@ -19,10 +19,18 @@ export interface VALIDATION_RETURN_VALUE {
 
 export interface TokenInformationType {
   userName: string;
-  email: string;
+  emailId: string;
   phoneNumber: string;
   password: string;
   role: string;
   userId: string;
   refId?: string;
+}
+
+export interface UserInputRequest {
+  userName: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  role: string;
 }

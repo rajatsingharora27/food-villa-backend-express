@@ -30,8 +30,12 @@ const verifyUserDetails = async (req: Request, res: Response, next: NextFunction
 
     if (verifyUserName.isValid && verifyUserEmai.isValid && isUserAlredyRegistered.isValid && isValidPassword.isValid) {
       res.locals.refid = refid;
+
       next();
+      return;
+      // console.log("moving after next");
     }
+    console.log("moving after next");
     return res.status(StatusCodes.BAD_REQUEST).json({
       refId: refid,
       message: errorList,

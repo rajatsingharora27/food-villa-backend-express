@@ -45,9 +45,12 @@ import express from "express";
 const router = express.Router();
 import SignUpController from "../../controller/signUpController";
 import verifyUserDetails from "../../middlewares/verifyUserDetails";
+import AdminAllocate from "../../controller/allocateAdmin";
 
 const signUpController = new SignUpController();
+const allocateAdmin = new AdminAllocate();
 
 router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
+router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
 
 export default router;
