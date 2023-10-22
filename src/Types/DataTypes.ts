@@ -8,8 +8,8 @@ export interface SIGNUP_USER {
 }
 
 export interface CART_ITEM_TYPE {
-  productId: string;
-  qunatity: number;
+  product: string;
+  quantity?: number;
 }
 
 export interface VALIDATION_RETURN_VALUE {

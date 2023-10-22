@@ -4,6 +4,7 @@
 import { Request, Response } from "express";
 import { UserInputRequest } from "../Types/DataTypes";
 import SignInUserService from "../service/signInUser";
+import { StatusCodes } from "http-status-codes";
 
 class SignInUserController {
   signUpUserService = new SignInUserService();
@@ -12,6 +13,12 @@ class SignInUserController {
     const refId = res.locals.refid;
     const userDocument: UserInputRequest = res.locals.userDocument;
     const userSignIn = await this.signUpUserService.signIn(req.body, userDocument, refId);
+    console.log(userSignIn);
+    res.status(StatusCodes.OK).json({
+      refId,
+      message: userSignIn.message,
+      responseData: userSignIn.data,
+    });
   };
 }
 
