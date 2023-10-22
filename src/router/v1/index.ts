@@ -62,5 +62,8 @@ router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
 router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord, signInController.userSign);
 
+//if add to wish list field is true in request then only add other wise no nee to go ahead
+// block this in api verification middle ware only
+router.post("/wishlit-update", verifyUserToken);
 router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
 export default router;
