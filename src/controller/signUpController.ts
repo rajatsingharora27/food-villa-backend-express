@@ -12,9 +12,9 @@ class SignUpController {
     try {
       const refId = res.locals.refid;
       const userSignUp: API_RESPONSE = await this.userSignUp.userSignUp(req.body, refId);
-      console.log(userSignUp);
+
       let data = this.generateResponseData(userSignUp);
-      console.log(data);
+
       return res.status(StatusCodes.OK).json({
         refId,
         message: userSignUp.message,

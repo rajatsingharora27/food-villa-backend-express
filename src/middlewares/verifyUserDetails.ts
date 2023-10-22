@@ -12,7 +12,7 @@ const verifyUserDetails = async (req: Request, res: Response, next: NextFunction
   const refid = uuidV4();
   try {
     logger.info(`{verifyUserDetails()} middleware started , refId:${refid}`);
-
+    if (reqBody.userName == undefined) return;
     const [verifyUserName, verifyUserEmai, isUserAlredyRegistered, isValidPassword] = await Promise.all([
       verifiedName(reqBody.userName, errorList),
       verifiedEmail(reqBody.emailId, errorList),
@@ -25,9 +25,8 @@ const verifyUserDetails = async (req: Request, res: Response, next: NextFunction
 
       next();
       return;
-      // console.log("moving after next");
     }
-    console.log("moving after next");
+
     return res.status(StatusCodes.BAD_REQUEST).json({
       refId: refid,
       message: errorList,

@@ -51,14 +51,16 @@ import DeleteUserContoller from "../../controller/deleteUserController";
 import verifyUserSignInDetails from "../../middlewares/verifySignInDetails";
 
 import vrifyUserExistAndPassWord from "../../middlewares/vrifyUserExistAndPasswordMiddleware";
+import SignInUserController from "../../controller/signInUserController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
 const deleteUserController = new DeleteUserContoller();
+const signInController = new SignInUserController();
 
 router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
-router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord);
+router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord, signInController.userSign);
 
 router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
 export default router;

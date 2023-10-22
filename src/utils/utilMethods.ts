@@ -15,7 +15,6 @@ import userSignModel from "../model/userSignModel";
 import { CART_ITEM_TYPE, SIGNUP_USER, VALIDATION_RETURN_VALUE } from "../Types/DataTypes";
 
 export const generateJWTtoken = (userObject: TokenInformationType) => {
-  console.log(userObject);
   if (process.env.JWT_SECRET && process.env.JWT_SECRET !== undefined) {
     return jwt.sign(
       {
@@ -34,7 +33,7 @@ export const generateJWTtoken = (userObject: TokenInformationType) => {
 
 export const generateHashPassword = (passoword: string) => {
   const saltRounds = process.env.SALT_ROUNDS;
-  console.log(saltRounds);
+
   let hash: string = "";
   try {
     if (saltRounds != null && saltRounds != undefined) {
@@ -100,7 +99,7 @@ export const verifiedEmail = (emailId: string, errorList: string[]): VALIDATION_
 
 export const verifyRegistedUser = async (emailId: string, errorList: string[]): Promise<VALIDATION_RETURN_VALUE> => {
   const userFromDB = await userSignModel.findOne({ email: emailId });
-  console.log(userFromDB);
+
   let isValidValue: boolean = false;
   if (userFromDB != null) {
     errorList.push(USER_ALREADY_EXIST_0007_1 + emailId + USER_ALREADY_EXIST_0007_2);

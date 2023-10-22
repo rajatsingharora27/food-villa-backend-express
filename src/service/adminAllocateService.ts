@@ -21,9 +21,8 @@ class AdminAllocateService {
         role: ADMIN_ROLE,
         hasAdminAccess: true,
       };
-      console.log(adminObject);
+
       await userSignModel.create(adminObject);
-      console.log(adminObject.userName, adminObject.email, adminObject.phoneNumber, adminObject.role, adminObject.userId);
       const token = generateJWTtoken({
         userName: adminObject.userName,
         emailId: adminObject.email,

@@ -25,13 +25,14 @@ const vrifyUserExistAndPassWord = async (req: Request, res: Response, next: Next
       res.locals.userDocument = isExistingUser;
       next();
       return;
+    } else {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        refId,
+        message: [USER_INCORRECT_PASSWORD],
+        data: {},
+      });
     }
   }
-  return res.status(StatusCodes.FORBIDDEN).json({
-    refId,
-    message: [USER_INCORRECT_PASSWORD],
-    data: {},
-  });
 };
 
 export default vrifyUserExistAndPassWord;

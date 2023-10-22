@@ -31,9 +31,9 @@ class UserSignUpService {
       ]);
       if (addUserDB.isTrue && addWishList.isTrue && addCartList?.isTrue) {
         const tokenObject: TokenInformationType = {
-          userName: req.userName,
+          userName: req.userName != undefined ? req.userName : "",
           emailId: req.emailId,
-          phoneNumber: req.phoneNumber,
+          phoneNumber: req.phoneNumber != undefined ? req.phoneNumber : "",
           password: req.password,
           role: "user",
           userId: userId,

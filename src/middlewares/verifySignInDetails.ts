@@ -24,9 +24,7 @@ const verifyUserSignInDetails = async (req: Request, res: Response, next: NextFu
 
       next();
       return;
-      // console.log("moving after next");
     }
-    console.log("moving after next");
     return res.status(StatusCodes.BAD_REQUEST).json({
       refId: refid,
       message: errorList,

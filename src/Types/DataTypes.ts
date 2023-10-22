@@ -1,8 +1,8 @@
 export interface SIGNUP_USER {
-  userName: string;
+  userName?: string;
   emailId: string;
   password: string;
-  phoneNumber: string;
+  phoneNumber?: string;
   cartItems?: Array<CART_ITEM_TYPE>;
   wishListItems?: Array<String>;
 }
@@ -34,6 +34,8 @@ export interface UserInputRequest {
   phoneNumber: string;
   password: string;
   role: string;
+  hasAdminAccess?: boolean;
+  userId?: string;
 }
 
 export interface DECODE_TOKEN {
