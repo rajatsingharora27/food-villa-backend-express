@@ -7,11 +7,15 @@ import log from "./config/logger";
 const dotenv = require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
+import swaggerUI from "swagger-ui-express";
+import YAML from "yamljs";
+
 const app = express();
 
 const startServer = async () => {
   const port = process.env.PORT;
-
+  const swaggerUIJsDocs = YAML.load("api.yml");
+  app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerUIJsDocs));
   //Mongo Db connection
 
   const mongoUri = process.env.MONGODB_URI;

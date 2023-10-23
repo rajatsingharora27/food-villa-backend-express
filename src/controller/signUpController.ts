@@ -9,19 +9,24 @@ class SignUpController {
   userSignUp = new UserSignUpService();
 
   signUpUser = async (req: Request, res: Response) => {
+    const refId = res.locals.refid;
     try {
-      const refId = res.locals.refid;
       const userSignUp: API_RESPONSE = await this.userSignUp.userSignUp(req.body, refId);
 
       let data = this.generateResponseData(userSignUp);
 
-      return res.status(StatusCodes.OK).json({
+      return res.status(StatusCodes.CREATED).json({
         refId,
         message: userSignUp.message,
-        data,
+        responseData: data,
       });
     } catch (ex) {
-      logger.error(`${ex}`);
+      logger.error(`Exeption occurred in creating user ${ex}`);
+      return res.status(StatusCodes.CREATED).json({
+        refId,
+        message: [`Exeption occurred in creating user ${ex}`],
+        responseData: {},
+      });
     }
   };
 
