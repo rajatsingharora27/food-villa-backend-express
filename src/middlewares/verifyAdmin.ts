@@ -15,7 +15,7 @@ export const verifyAdminUser = (req: Request, res: Response, next: NextFunction)
   try {
     if (authorizationHeader != undefined) {
       const tokenWithoutBearer = authorizationHeader.substring(7);
-      isTokenVerified = verifyToken(tokenWithoutBearer);
+      isTokenVerified = verifyToken(tokenWithoutBearer, "/delete-user");
 
       if (isTokenVerified.isValid == true) {
         res.locals.refid = refId;

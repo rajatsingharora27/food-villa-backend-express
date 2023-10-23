@@ -52,11 +52,14 @@ import verifyUserSignInDetails from "../../middlewares/verifySignInDetails";
 
 import vrifyUserExistAndPassWord from "../../middlewares/vrifyUserExistAndPasswordMiddleware";
 import SignInUserController from "../../controller/signInUserController";
+import { verifyUserToken } from "../../middlewares/verifyUserToken";
+import WishListController from "../../controller/wishlistUpdateController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
 const deleteUserController = new DeleteUserContoller();
 const signInController = new SignInUserController();
+const wishListController = new WishListController();
 
 router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
@@ -66,6 +69,6 @@ router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord, sign
 // block this in api verification middle ware only
 
 // verifyUserToken
-router.post("/wishlit-update");
+router.post("/wishlist-update", verifyUserToken, wishListController.updateWishListDataOfUser);
 router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
 export default router;

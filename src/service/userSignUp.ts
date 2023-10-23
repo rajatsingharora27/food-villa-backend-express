@@ -5,7 +5,7 @@ import userWishListModel from "../model/userWishListModel";
 import cartUserModel from "../model/cartUserModel";
 import { v4 as uuidV4 } from "uuid";
 import { USER_ROLE } from "../constants/applicationConstants";
-import { generateHashPassword, generateJWTtoken } from "../utils/utilMethods";
+import { addToWishList, generateHashPassword, generateJWTtoken } from "../utils/utilMethods";
 import { API_RESPONSE, ResponseData } from "../Types/APIResponse";
 
 class UserSignUpService {
@@ -26,7 +26,7 @@ class UserSignUpService {
       //   this.addToCartList(isUserWithCartItems, req.emailId)
       const [addUserDB, addWishList, addCartList] = await Promise.all([
         this.registreUser(req, userId, refid, errorList),
-        this.addToWishList(isUserWithWishList, userId, req.emailId, refid, errorList),
+        addToWishList(isUserWithWishList, userId, req.emailId, refid, errorList),
         this.addToCartList(isUserWithCartList, userId, req.emailId, refid, errorList),
       ]);
       if (addUserDB.isTrue && addWishList.isTrue && addCartList?.isTrue) {
@@ -69,70 +69,70 @@ class UserSignUpService {
     }
   };
 
-  private async addToWishList(isUserWithWishList: String[] | undefined, userId: string, emailId: string, refId: string, errorList: Array<string>) {
-    let isTrue: boolean = false;
-    try {
-      const userWishList = await userWishListModel.findOne({ email: emailId });
-      //user is not present already
-      let userWishListObject;
-      let allWishListUpdateItems;
-      if (userWishList == null) {
-        userWishListObject = {
-          userId: userId,
-          email: emailId,
-          wishlistItem: isUserWithWishList,
-        };
-        const wishListAdded = await userWishListModel.create(userWishListObject);
+  // private async addToWishList(isUserWithWishList: String[] | undefined, userId: string, emailId: string, refId: string, errorList: Array<string>) {
+  //   let isTrue: boolean = false;
+  //   try {
+  //     const userWishList = await userWishListModel.findOne({ email: emailId });
+  //     //user is not present already
+  //     let userWishListObject;
+  //     let allWishListUpdateItems;
+  //     if (userWishList == null) {
+  //       userWishListObject = {
+  //         userId: userId,
+  //         email: emailId,
+  //         wishlistItem: isUserWithWishList,
+  //       };
+  //       const wishListAdded = await userWishListModel.create(userWishListObject);
 
-        wishListAdded.save();
-        isTrue = true;
-        logger.info("product added to wish list table");
+  //       wishListAdded.save();
+  //       isTrue = true;
+  //       logger.info("product added to wish list table");
 
-        allWishListUpdateItems = userWishListObject.wishlistItem;
-      } else {
-        let set = new Set();
+  //       allWishListUpdateItems = userWishListObject.wishlistItem;
+  //     } else {
+  //       let set = new Set();
 
-        //data from sb get alla the product list of wishlist and add to set
-        userWishList.wishlistItem.forEach((ele) => {
-          set.add(ele.product);
-        });
+  //       //data from sb get alla the product list of wishlist and add to set
+  //       userWishList.wishlistItem.forEach((ele) => {
+  //         set.add(ele.product);
+  //       });
 
-        // passed by user to add in wishlist and add to the set
-        if (isUserWithWishList != undefined) {
-          isUserWithWishList.forEach((ele) => {
-            set.add(ele);
-          });
-        }
+  //       // passed by user to add in wishlist and add to the set
+  //       if (isUserWithWishList != undefined) {
+  //         isUserWithWishList.forEach((ele) => {
+  //           set.add(ele);
+  //         });
+  //       }
 
-        let arr = Array.from(set);
-        // userWishListObject = {
-        //   userId: userId,
-        //   emailId: emailId,
-        //   wishlistItem: arr,
-        // };
-        const items = await userWishListModel.updateOne({ userId: userId }, { $set: { wishlistItem: arr } });
-        isTrue = true;
-        logger.info("wish list updated");
-        allWishListUpdateItems = arr;
-      }
-      const wishLitData = allWishListUpdateItems?.map((ele: any) => {
-        return ele.product;
-      });
+  //       let arr = Array.from(set);
+  //       // userWishListObject = {
+  //       //   userId: userId,
+  //       //   emailId: emailId,
+  //       //   wishlistItem: arr,
+  //       // };
+  //       const items = await userWishListModel.updateOne({ userId: userId }, { $set: { wishlistItem: arr } });
+  //       isTrue = true;
+  //       logger.info("wish list updated");
+  //       allWishListUpdateItems = arr;
+  //     }
+  //     const wishLitData = allWishListUpdateItems?.map((ele: any) => {
+  //       return ele.product;
+  //     });
 
-      return {
-        isTrue,
-        data: wishLitData,
-        message: errorList,
-      };
-    } catch (ex) {
-      logger.error(`Exception occurred while adding to {addToWishList} refId:${refId}  ex:${ex}`);
-      return {
-        isTrue: false,
-        data: {},
-        message: [`Exception occurred in {addToWishList} refId:${refId} , ex: ${ex}`],
-      };
-    }
-  }
+  //     return {
+  //       isTrue,
+  //       data: wishLitData,
+  //       message: errorList,
+  //     };
+  //   } catch (ex) {
+  //     logger.error(`Exception occurred while adding to {addToWishList} refId:${refId}  ex:${ex}`);
+  //     return {
+  //       isTrue: false,
+  //       data: {},
+  //       message: [`Exception occurred in {addToWishList} refId:${refId} , ex: ${ex}`],
+  //     };
+  //   }
+  // }
 
   private async addToCartList(isUserWithCartItems: any, userId: string, emailId: string, refid: string, errorList: Array<string>) {
     let isTrue: boolean = false;

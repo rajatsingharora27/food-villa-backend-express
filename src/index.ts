@@ -19,7 +19,6 @@ const startServer = async () => {
   //Mongo Db connection
 
   const mongoUri = process.env.MONGODB_URI;
-
   if (!mongoUri) {
     console.error("MONGODB_URI environment variable is not defined.");
   } else {

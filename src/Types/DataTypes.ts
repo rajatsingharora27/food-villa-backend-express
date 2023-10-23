@@ -4,7 +4,7 @@ export interface SIGNUP_USER {
   password: string;
   phoneNumber?: string;
   cartItems?: Array<CART_ITEM_TYPE>;
-  wishListItems?: Array<String>;
+  wishListItems?: Array<string>;
 }
 
 export interface CART_ITEM_TYPE {
@@ -45,4 +45,10 @@ export interface DECODE_TOKEN {
   userId: string;
   iat?: number;
   exp?: number;
+}
+
+export interface WISHLIST_ADD_BODY {
+  token: string;
+  wishlistAdd: boolean;
+  productId: string[];
 }

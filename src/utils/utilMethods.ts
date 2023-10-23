@@ -13,6 +13,7 @@ import {
 } from "../constants/errorMessage";
 import userSignModel from "../model/userSignModel";
 import { CART_ITEM_TYPE, SIGNUP_USER, VALIDATION_RETURN_VALUE } from "../Types/DataTypes";
+import userWishListModel from "../model/userWishListModel";
 
 export const generateJWTtoken = (userObject: TokenInformationType) => {
   if (process.env.JWT_SECRET && process.env.JWT_SECRET !== undefined) {
@@ -46,18 +47,18 @@ export const generateHashPassword = (passoword: string) => {
   return hash;
 };
 
-export const verifyToken = (token: string): VALIDATION_RESPONSE => {
-  let tokenDeocdeValue;
+export const verifyToken = (token: string, api: string): VALIDATION_RESPONSE => {
+  let tokenDecodeValue;
   if (process.env.JWT_SECRET != undefined || process.env.JWT_SECRET != null) {
-    tokenDeocdeValue = jwt.verify(token, process.env.JWT_SECRET) as DECODE_TOKEN;
+    tokenDecodeValue = jwt.verify(token, process.env.JWT_SECRET) as DECODE_TOKEN;
     const currentTime = Math.floor(Date.now() / 1000);
-    if (tokenDeocdeValue.exp != undefined && tokenDeocdeValue.exp < currentTime) {
+    if (tokenDecodeValue.exp != undefined && tokenDecodeValue.exp < currentTime) {
       return {
         isValid: false,
         message: ["Token is expired please sign in again"],
         data: {},
       };
-    } else if (tokenDeocdeValue.role != "admin") {
+    } else if (tokenDecodeValue.role != "admin" && api == "/delete-user") {
       return {
         isValid: false,
         message: ["Admin is allowed to delete the user"],
@@ -68,7 +69,7 @@ export const verifyToken = (token: string): VALIDATION_RESPONSE => {
     return {
       isValid: true,
       message: ["user is validated"],
-      data: {},
+      data: tokenDecodeValue,
     };
   } else {
     return { isValid: false, message: ["Some error occurred"], data: {} };
@@ -126,4 +127,72 @@ export const verifySignInPassword = (password: string, encrypted: string): boole
     return true;
   }
   return false;
+};
+
+export const addToWishList = async (isUserWithWishList: string[] | undefined, userId: string, emailId: string, refId: string, errorList: Array<string>) => {
+  let isTrue: boolean = false;
+  try {
+    const userWishList = await userWishListModel.findOne({ email: emailId });
+    //user is not present already
+    let userWishListObject;
+    let allWishListUpdateItems;
+    if (userWishList == null) {
+      userWishListObject = {
+        userId: userId,
+        email: emailId,
+        wishlistItem: isUserWithWishList,
+      };
+      const wishListAdded = await userWishListModel.create(userWishListObject);
+
+      wishListAdded.save();
+      isTrue = true;
+      logger.info("product added to wish list table");
+
+      allWishListUpdateItems = userWishListObject.wishlistItem;
+    } else {
+      let set = new Set();
+
+      //data from sb get alla the product list of wishlist and add to set
+      userWishList.wishlistItem.forEach((ele) => {
+        set.add(ele.product);
+      });
+
+      // passed by user to add in wishlist and add to the set
+      if (isUserWithWishList != undefined) {
+        isUserWithWishList.forEach((ele) => {
+          set.add(ele);
+        });
+      }
+
+      let arr = Array.from(set);
+      // userWishListObject = {
+      //   userId: userId,
+      //   emailId: emailId,
+      //   wishlistItem: arr,
+      // };
+      let finalWishListArray = arr.map((ele) => {
+        return { product: ele };
+      });
+      const items = await userWishListModel.updateOne({ userId: userId }, { $set: { wishlistItem: finalWishListArray } });
+      isTrue = true;
+      logger.info("wish list updated");
+      allWishListUpdateItems = finalWishListArray;
+    }
+    const wishLitData = allWishListUpdateItems?.map((ele: any) => {
+      return ele.product;
+    });
+
+    return {
+      isTrue,
+      data: wishLitData,
+      message: errorList,
+    };
+  } catch (ex) {
+    logger.error(`Exception occurred while adding to {addToWishList} refId:${refId}  ex:${ex}`);
+    return {
+      isTrue: false,
+      data: {},
+      message: [`Exception occurred in {addToWishList} refId:${refId} , ex: ${ex}`],
+    };
+  }
 };
