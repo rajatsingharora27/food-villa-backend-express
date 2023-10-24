@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { DECODE_TOKEN, TokenInformationType, UserInputRequest } from "../Types/DataTypes";
+import { DECODE_TOKEN, PRODUCT_ON_FILTER, TokenInformationType, UserInputRequest } from "../Types/DataTypes";
 import bcrypt from "bcrypt";
 import logger from "../config/logger";
 import { API_RESPONSE, VALIDATION_RESPONSE } from "../Types/APIResponse";
@@ -59,7 +59,7 @@ export const verifyToken = (token: string, api: string): VALIDATION_RESPONSE => 
         message: ["Token is expired please sign in again"],
         data: {},
       };
-    } else if (tokenDecodeValue.role != "admin" && api == "/delete-user") {
+    } else if (tokenDecodeValue.role != "admin" && (api == "/delete-user" || api == "/add-product" || api == "/delete-product" || api == "/filter-products-admin")) {
       return {
         isValid: false,
         message: ["Admin is allowed to delete the user"],
@@ -284,3 +284,48 @@ export const getCartListItem = async (userDocumentFromDb: UserInputRequest, inpu
     };
   }
 };
+
+export const buildQuery = (filterReq: PRODUCT_ON_FILTER, refId: string, isAdminAccess: boolean) => {
+  let query = {};
+
+  if (isAdminAccess == false) {
+    query = queryWithoutAdminAccess(query, filterReq);
+  } else {
+    query = queryWithoutAdminAccess(query, filterReq);
+    query = queryWithAdminAccess(query, filterReq);
+  }
+  return query;
+};
+
+function queryWithoutAdminAccess(query: {}, filterReq: PRODUCT_ON_FILTER) {
+  if (filterReq.productName !== null && filterReq.productName.trim().length > 0) {
+    query = { ...query, productName: filterReq.productName };
+  }
+  if (filterReq.minPrice != null && filterReq.minPrice != undefined && filterReq.minPrice !== 0) {
+    query = { ...query, productPrice: { $gte: filterReq.minPrice } };
+  }
+  if (filterReq.maxPrice != null && filterReq.maxPrice != undefined && filterReq.maxPrice !== 0) {
+    query = { ...query, productPrice: { $lte: filterReq.maxPrice } };
+  }
+  if (filterReq.category != null && filterReq.category.trim().length > 0) {
+    query = { ...query, productCategory: filterReq.category };
+  }
+  if (filterReq.festiveTag != null && filterReq.festiveTag.trim().length > 0) {
+    query = { ...query, festiveTag: filterReq.festiveTag };
+  }
+
+  return query;
+}
+
+function queryWithAdminAccess(query: {}, filterReq: PRODUCT_ON_FILTER) {
+  if (filterReq.minInventory != null && filterReq.minInventory != undefined && filterReq.minInventory != 0) {
+    query = { ...query, inventory: { $gte: filterReq.minInventory } };
+  }
+  if (filterReq.maxInventory != null && filterReq.maxInventory != undefined && filterReq.maxInventory != 0) {
+    query = { ...query, inventory: { $lte: filterReq.maxInventory } };
+  }
+  if (filterReq.inStock != null && filterReq.inStock != undefined) {
+    query = { ...query, inStock: filterReq.inStock };
+  }
+  return query;
+}

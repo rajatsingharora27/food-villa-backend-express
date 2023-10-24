@@ -63,3 +63,16 @@ export interface PRODUCT_BODY extends WISHLIST_ADD_BODY {
     decrease: boolean;
   };
 }
+
+export interface PRODUCT_ON_FILTER {
+  page: number;
+  totalItemPerPage: number;
+  productName: string;
+  maxPrice: number;
+  minPrice: number;
+  category: string;
+  festiveTag: string;
+  maxInventory?: number;
+  minInventory?: number;
+  inStock?: boolean;
+}

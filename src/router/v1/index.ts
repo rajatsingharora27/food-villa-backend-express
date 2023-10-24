@@ -55,6 +55,7 @@ import SignInUserController from "../../controller/signInUserController";
 import { verifyUserToken } from "../../middlewares/verifyUserToken";
 import WishListController from "../../controller/wishlistUpdateController";
 import UpdateCartController from "../../controller/updateCart";
+import AddProductController from "../../controller/addProductController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
@@ -62,12 +63,14 @@ const deleteUserController = new DeleteUserContoller();
 const signInController = new SignInUserController();
 const wishListController = new WishListController();
 const updateCartController = new UpdateCartController();
+const productController = new AddProductController();
 
 //General When we want to create an admin
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
 
 router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord, signInController.userSign);
+router.post("/filter-product-admin", verifyAdminUser("/filter-products-admin"), productController.filterProductAdmin);
 
 //if add to wish lißst field is true in request then only add other wise no nee to go ahead
 // block this in api verification middle ware only
@@ -77,5 +80,8 @@ router.post("/wishlist-update", verifyUserToken, wishListController.updateWishLi
 router.post("/cart-update", verifyUserToken, updateCartController.updateCartListDataOfUser);
 
 // Admin Related API
-router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
+router.delete("/delete-user", verifyAdminUser("/delete-user"), deleteUserController.deleteUser);
+router.post("/add-product", verifyAdminUser("/add-product"), productController.addNewProduct);
+router.delete("/delete-product", verifyAdminUser("/delete-product"), productController.deleteProduct);
+router.post("/filter-product", productController.filterProduct);
 export default router;

@@ -14,6 +14,7 @@ const productDetailSchema = new Schema(
       type: String,
       required: true,
       unique: true,
+      set: (value: string) => value.trim(),
     },
     productPrice: {
       type: Number,
