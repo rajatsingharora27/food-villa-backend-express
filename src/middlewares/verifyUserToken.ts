@@ -7,13 +7,13 @@ export const verifyUserToken = (req: Request, res: Response, next: NextFunction)
   const token = req.body.token;
   const refId = uuidV4();
 
-  if (req.body.wishlistAdd == false) {
-    return res.status(StatusCodes.OK).json({
-      refId,
-      message: ["No need to update wish list"],
-      data: {},
-    });
-  }
+  // if (req.body.wishlistAdd == false) {
+  //   return res.status(StatusCodes.OK).json({
+  //     refId,
+  //     message: ["No need to update wish list"],
+  //     data: {},
+  //   });
+  // }
 
   if (token != null && token.trim().length != 0) {
     const validateTokenResponse = verifyToken(token, "/wishlit-update");

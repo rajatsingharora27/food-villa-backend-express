@@ -15,7 +15,7 @@ const userCartDetailsSchema = new Schema(
 
     cartItem: [
       {
-        product: {
+        productId: {
           type: String,
           ref: "productInfo", // Reference to the Product model
         },

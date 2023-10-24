@@ -13,12 +13,12 @@ class SignUpController {
     try {
       const userSignUp: API_RESPONSE = await this.userSignUp.userSignUp(req.body, refId);
 
-      let data = this.generateResponseData(userSignUp);
+      // let data = this.generateResponseData(userSignUp);
 
       return res.status(StatusCodes.CREATED).json({
         refId,
         message: userSignUp.message,
-        responseData: data,
+        responseData: userSignUp.data,
       });
     } catch (ex) {
       logger.error(`Exeption occurred in creating user ${ex}`);
@@ -30,24 +30,24 @@ class SignUpController {
     }
   };
 
-  generateResponseData(userSignUp: API_RESPONSE) {
-    const token = userSignUp.data.token;
-    let wishlistItems = userSignUp.data.wishListItem?.map((ele) => {
-      return ele;
-    });
-    let cartItems = userSignUp.data.cartItems?.map((ele) => {
-      return {
-        productId: ele.product,
-        quantity: ele.quantity,
-      };
-    });
+  // generateResponseData(userSignUp: API_RESPONSE) {
+  //   const token = userSignUp.data.token;
+  //   let wishlistItems = userSignUp.data.wishListItem?.map((ele) => {
+  //     return ele;
+  //   });
+  //   let cartItems = userSignUp.data.cartItems?.map((ele) => {
+  //     return {
+  //       productId: ele.product,
+  //       quantity: ele.quantity,
+  //     };
+  //   });
 
-    return {
-      token,
-      wishlistItems,
-      cartItems,
-    };
-  }
+  //   return {
+  //     token,
+  //     wishlistItems,
+  //     cartItems,
+  //   };
+  // }
 }
 
 export default SignUpController;

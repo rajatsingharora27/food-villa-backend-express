@@ -54,12 +54,14 @@ import vrifyUserExistAndPassWord from "../../middlewares/vrifyUserExistAndPasswo
 import SignInUserController from "../../controller/signInUserController";
 import { verifyUserToken } from "../../middlewares/verifyUserToken";
 import WishListController from "../../controller/wishlistUpdateController";
+import UpdateCartController from "../../controller/updateCart";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
 const deleteUserController = new DeleteUserContoller();
 const signInController = new SignInUserController();
 const wishListController = new WishListController();
+const updateCartController = new UpdateCartController();
 
 router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
@@ -70,5 +72,6 @@ router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord, sign
 
 // verifyUserToken
 router.post("/wishlist-update", verifyUserToken, wishListController.updateWishListDataOfUser);
+router.post("/cart-update", verifyUserToken, updateCartController.updateCartListDataOfUser);
 router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
 export default router;

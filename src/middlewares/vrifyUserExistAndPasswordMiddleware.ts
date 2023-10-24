@@ -16,7 +16,7 @@ const vrifyUserExistAndPassWord = async (req: Request, res: Response, next: Next
   if (isExistingUser == null) {
     return res.status(StatusCodes.FORBIDDEN).json({
       refId,
-      message: [USER_NOT_FOUND_0010_1 + req.body.emaiId + USER_NOT_FOUND_0010_2],
+      message: [USER_NOT_FOUND_0010_1 + req.body.emailId + USER_NOT_FOUND_0010_2],
       data: {},
     });
   } else {

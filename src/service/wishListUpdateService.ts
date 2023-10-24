@@ -6,9 +6,15 @@ import { addToWishList } from "../utils/utilMethods";
 class WishListUpdateService {
   updateWishList = async (inputRequest: WISHLIST_ADD_BODY, refId: string, tokenData: DECODE_TOKEN) => {
     try {
+      let dataRecived;
       let errorList: Array<string> = [];
       logger.info(`{updateWishList} Service started , refId:${refId}`);
-      const dataRecived = await addToWishList(inputRequest.productId, tokenData.userId, tokenData.email, refId, errorList);
+      if (inputRequest.wishlistAdd == false) {
+        dataRecived = await removeFromWishList(inputRequest.productId, tokenData.userId, refId, errorList);
+      } else {
+        dataRecived = await addToWishList(inputRequest.productId, tokenData.userId, tokenData.email, refId, errorList);
+      }
+
       console.log(dataRecived);
       return {
         refId,
@@ -23,6 +29,34 @@ class WishListUpdateService {
         data: {},
       };
     }
+  };
+}
+
+async function removeFromWishList(productId: string[], userId: string, refId: string, errorList: string[]) {
+  const updatedData = await userWishListModel.findOneAndUpdate(
+    {
+      userId: userId,
+    },
+    {
+      $pull: {
+        wishlistItem: {
+          product: productId,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  let updateWihslistArr: any = [];
+  if (updatedData != null && updatedData.wishlistItem.length > 0) {
+    updateWihslistArr = updatedData.wishlistItem.map((ele) => {
+      return ele.product;
+    });
+  }
+  return {
+    isValid: true,
+    message: ["Udated the wishlist"],
+    data: updateWihslistArr,
   };
 }
 
