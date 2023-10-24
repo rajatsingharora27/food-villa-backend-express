@@ -56,6 +56,7 @@ import { verifyUserToken } from "../../middlewares/verifyUserToken";
 import WishListController from "../../controller/wishlistUpdateController";
 import UpdateCartController from "../../controller/updateCart";
 import AddProductController from "../../controller/addProductController";
+import ForgotPasswordController from "../../controller/forgotPasswordController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
@@ -64,6 +65,7 @@ const signInController = new SignInUserController();
 const wishListController = new WishListController();
 const updateCartController = new UpdateCartController();
 const productController = new AddProductController();
+const forgotPasswordController = new ForgotPasswordController();
 
 //General When we want to create an admin
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
@@ -78,10 +80,23 @@ router.post("/filter-product-admin", verifyAdminUser("/filter-products-admin"), 
 // user Related API
 router.post("/wishlist-update", verifyUserToken, wishListController.updateWishListDataOfUser);
 router.post("/cart-update", verifyUserToken, updateCartController.updateCartListDataOfUser);
+router.post("/forgot-password", verifyUserSignInDetails, forgotPasswordController.forgotPassword);
 
 // Admin Related API
 router.delete("/delete-user", verifyAdminUser("/delete-user"), deleteUserController.deleteUser);
 router.post("/add-product", verifyAdminUser("/add-product"), productController.addNewProduct);
 router.delete("/delete-product", verifyAdminUser("/delete-product"), productController.deleteProduct);
 router.post("/filter-product", productController.filterProduct);
+
+/**
+ * Update product API
+ * Order API
+ * Payment API
+ * Forgot Password API --> DONE
+ * Message / Mail API  (on order placed)
+ *
+ *
+ *
+ */
+
 export default router;
