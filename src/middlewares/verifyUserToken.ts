@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { verifyToken } from "../utils/utilMethods";
 import { StatusCodes } from "http-status-codes";
 import { v4 as uuidV4 } from "uuid";
+import { INVALID_TOKEN_0014, TOKEN_NOT_PROVIDED_USER_NOT_PRESENT_0015 } from "../constants/errorMessage";
 
 export const verifyUserToken = (req: Request, res: Response, next: NextFunction) => {
   const token = req.body.token;
@@ -20,7 +21,7 @@ export const verifyUserToken = (req: Request, res: Response, next: NextFunction)
     if (validateTokenResponse.isValid == false) {
       return res.status(StatusCodes.FORBIDDEN).json({
         refId,
-        message: ["invalid token"],
+        message: [INVALID_TOKEN_0014],
         data: {},
       });
     } else {
@@ -32,7 +33,7 @@ export const verifyUserToken = (req: Request, res: Response, next: NextFunction)
   } else {
     return res.status(StatusCodes.FORBIDDEN).json({
       refId,
-      message: ["Token must be provided"],
+      message: [TOKEN_NOT_PROVIDED_USER_NOT_PRESENT_0015],
       data: {},
     });
   }

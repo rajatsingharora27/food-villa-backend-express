@@ -15,3 +15,5 @@ export const USER_NOT_FOUND_0010_2 = ") not present with us";
 export const USER_INCORRECT_PASSWORD = "ER0011::Critical, incorrect Password";
 export const MINIMUM_USERNAME_LENGTH_0012 = "ER0012::Critical, minimum userName length is 2";
 export const EMAIL_ID_REQUIRES_0013 = "ER0013::Critical,emaiId is required Field";
+export const INVALID_TOKEN_0014 = "ER0013::Critical,Invalid token provided";
+export const TOKEN_NOT_PROVIDED_USER_NOT_PRESENT_0015 = "ER0013::Critical,Token not provided or user not present , Please try to login / signup";
