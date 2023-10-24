@@ -63,15 +63,19 @@ const signInController = new SignInUserController();
 const wishListController = new WishListController();
 const updateCartController = new UpdateCartController();
 
-router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
+//General When we want to create an admin
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
+
+router.post("/sign-up", verifyUserDetails, signUpController.signUpUser);
 router.post("/sign-in", verifyUserSignInDetails, vrifyUserExistAndPassWord, signInController.userSign);
 
-//if add to wish list field is true in request then only add other wise no nee to go ahead
+//if add to wish lißst field is true in request then only add other wise no nee to go ahead
 // block this in api verification middle ware only
 
-// verifyUserToken
+// user Related API
 router.post("/wishlist-update", verifyUserToken, wishListController.updateWishListDataOfUser);
 router.post("/cart-update", verifyUserToken, updateCartController.updateCartListDataOfUser);
+
+// Admin Related API
 router.delete("/delete-user", verifyAdminUser, deleteUserController.deleteUser);
 export default router;
