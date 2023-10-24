@@ -2,13 +2,14 @@ import express from "express";
 import apiRouter from "./router/index";
 import bodyParser from "body-parser";
 import cors from "cors";
-import mongoose from "mongoose";
+
 import log from "./config/logger";
 const dotenv = require("dotenv").config({
   path: `.env.${process.env.NODE_ENV}`,
 });
 import swaggerUI from "swagger-ui-express";
 import YAML from "yamljs";
+import { connectDataBase } from "./config/mongoConfig";
 
 const app = express();
 
@@ -16,21 +17,22 @@ const startServer = async () => {
   const port = process.env.PORT;
   const swaggerUIJsDocs = YAML.load("api.yml");
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerUIJsDocs));
-  //Mongo Db connection
+  // //Mongo Db connection
 
-  const mongoUri = process.env.MONGODB_URI;
-  if (!mongoUri) {
-    console.error("MONGODB_URI environment variable is not defined.");
-  } else {
-    mongoose
-      .connect(mongoUri)
-      .then(() => {
-        log.info("Connected to MongoDB");
-      })
-      .catch((error) => {
-        log.error("MongoDB connection error:", error);
-      });
-  }
+  // const mongoUri = process.env.MONGODB_URI;
+  // if (!mongoUri) {
+  //   console.error("MONGODB_URI environment variable is not defined.");
+  // } else {
+  //   mongoose
+  //     .connect(mongoUri)
+  //     .then(() => {
+  //       log.info("Connected to MongoDB");
+  //     })
+  //     .catch((error) => {
+  //       log.error("MongoDB connection error:", error);
+  //     });
+  // }
+  connectDataBase();
 
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());

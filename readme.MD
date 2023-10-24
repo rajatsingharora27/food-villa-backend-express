@@ -314,3 +314,108 @@ Form Token:
      - delete the wish list and cart aswell
 
 USERID for user generated will be same in cartItem and wish list Item for that user
+
+9.  PLACE ORDER
+
+    /\*\*
+
+    - Place order(HAVE TO MAKE THIS AS ATOMIC) -> since mutiple reest can be send cant update dabase at same time
+    - - for each product check if the that is in inventory
+    -        - if not
+    -            { return user the message about out of stock}
+    -            and try to place order with the products current in the inventory
+    -
+    -
+    -        -if every thing in inventory (MAKE THIS AS ATOMIC)
+    -
+    -             1)place the order by sending the details to razor pay service
+    -             2)use the external api to calculate the distance
+    -             3)** tax id nessary
+    -             4)update the database accodingly of the inventroy of the product
+    -             5) update userCart table accordingly
+    -                    - delete the product user has ordered
+    -                    - if those order ehich could not be placed because inventory is 0 keep them in userCart table as it is
+    -            -----Till here every operation should be done atomically -----
+    -
+    -
+    -            aync operation not related to above user will get the oprder placed message on screen
+    -            These will happen in background
+    -            6) Make the  Order table and stor the order details
+    -                {
+    -                   userName:,
+    -                   userId,
+    -                   emailId,
+    -                   phoneNumber
+    -                   orderdetails:[
+    -                      productOrder list
+    -                    ],
+    -                    price:{
+    -                    totalPrice:,
+    -                    tax:
+    -                     distanceCost
+    -                    },
+    -                    orderDate:
+    -                    delivery expected date:
+    -                    userSelectedDeliveryDate,
+    -                    isDelivered:boolean -> initially false
+    -                 }
+    -
+    -            7) Make a mail service /  sms service
+    -                after the order is placed send user the message
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    -
+    - app.post('/place-order/:productId', async (req, res) => {
+      const { productId } = req.params;
+      const { quantity } = req.body;
+
+const session = await mongoose.startSession();
+session.startTransaction();
+
+try {
+const product = await Product.findById(productId).session(session);
+if (!product || product.inventory < quantity) {
+await session.abortTransaction();
+session.endSession();
+return res.status(400).json({ message: "Product out of stock" });
+}
+
+    const order = new Order({
+      product: productId,
+      quantity,
+      totalCost: product.price * quantity,
+    });
+
+    await order.save({ session: session });
+
+    product.inventory -= quantity;
+    await product.save({ session: session });
+
+    // Simulate payment processing
+    // You can replace this with actual payment processing logic
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.json({ message: "Order placed successfully" });
+
+} catch (error) {
+await session.abortTransaction();
+session.endSession();
+console.error(error);
+res.status(500).json({ message: "Order placement failed" });
+}
+});
+
+app.listen(3000, () => {
+console.log('Server is running on port 3000');
+});
