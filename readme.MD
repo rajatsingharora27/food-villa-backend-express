@@ -366,8 +366,35 @@ USERID for user generated will be same in cartItem and wish list Item for that u
     -
     -
     -
-    -
-    -
+    - ***
+
+          -Request (For Signed up and not signeup user this request will be same)
+          This will calculte the price total and check if in the inventory each product
+          {
+              cartItem :[
+                  {
+                      productName:
+                      productId:
+                      productPrice:
+                  }
+              ]
+          }
+
+          --- next screen user will enter the its delivery details
+              for signed up users (editable , email will not be editable in this case)
+                  user name ,
+                  phone number ,
+                  email ,
+                  will already be filled in the fields
+
+              for non signed in user the have to fill these details
+
+
+          --- on clickPlace order
+              -- do the follwing steps mentioned above
+
+      ***
+
     -
     -
     -
@@ -419,3 +446,6 @@ res.status(500).json({ message: "Order placement failed" });
 app.listen(3000, () => {
 console.log('Server is running on port 3000');
 });
+
+key_id,key_secret
+rzp_test_Gve1XEYDMYKP0W,qQczl8vdksUpa7LnIrKiSLu0

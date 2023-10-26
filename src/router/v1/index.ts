@@ -14,6 +14,7 @@ import WishListController from "../../controller/wishlistUpdateController";
 import UpdateCartController from "../../controller/updateCart";
 import AddProductController from "../../controller/addProductController";
 import ForgotPasswordController from "../../controller/forgotPasswordController";
+import PlaceOrderController from "../../controller/placeOrderController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
@@ -23,6 +24,7 @@ const wishListController = new WishListController();
 const updateCartController = new UpdateCartController();
 const productController = new AddProductController();
 const forgotPasswordController = new ForgotPasswordController();
+const placeOrderController = new PlaceOrderController();
 
 //General When we want to create an admin
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
@@ -44,6 +46,7 @@ router.delete("/delete-user", verifyAdminUser("/delete-user"), deleteUserControl
 router.post("/add-product", verifyAdminUser("/add-product"), productController.addNewProduct);
 router.delete("/delete-product", verifyAdminUser("/delete-product"), productController.deleteProduct);
 router.post("/filter-product", productController.filterProduct);
+router.post("/place-order", placeOrderController.placeOrderUserController);
 
 /**
  * Update product API
