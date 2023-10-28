@@ -40,6 +40,27 @@ const startServer = async () => {
   dotenv.use;
 
   app.use("/food-villa", apiRouter);
+
+  app.post("/listen-payment-conformation", async (req, res) => {
+    try {
+      const event = req.body;
+      console.log(event);
+
+      // Handle different types of events
+      if (event.type === "payment_intent.succeeded") {
+        // Handle successful payment
+      } else if (event.type === "payment_intent.payment_failed") {
+        // Handle payment failure
+      }
+
+      // Respond with a 200 OK status code to acknowledge receipt of the event
+      res.status(200).end();
+    } catch (error) {
+      console.error("Webhook error:", error);
+      res.status(400).send("Webhook Error");
+    }
+  });
+
   app.listen(port, () => {
     log.info(`Listing to the ${port}`);
     log.info("****************************************************************");

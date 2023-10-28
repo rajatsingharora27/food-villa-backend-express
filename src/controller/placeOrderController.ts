@@ -6,7 +6,7 @@ class PlaceOrderController {
   private placeOrderService = new PlaceOrderService();
   placeOrderUserController = async (req: Request, res: Response) => {
     // console.log(req.body);
-    const placeOrder = await this.placeOrderService.placeUserOrder(req.body, "12345");
+    const placeOrder = await this.placeOrderService.generatePaymentLink(req.body, "12345");
     if (placeOrder.isTrue) {
       res.status(StatusCodes.OK).json({
         refId: "1234",
