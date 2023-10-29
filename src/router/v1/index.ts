@@ -50,6 +50,9 @@ router.delete("/delete-product", verifyAdminUser("/delete-product"), productCont
 router.post("/filter-product", productController.filterProduct);
 router.post("/place-order", placeOrderController.placeOrderUserController);
 router.post("/payment-status", placeOrderController.paymentStatusController);
+router.post("/webhook", (req: Request, res: Response) => {
+  console.log("inWebhook");
+});
 
 //Webhook
 // router.post("/webhook", express.raw({ type: "application/json" }), (request: Request, response: Response) => {

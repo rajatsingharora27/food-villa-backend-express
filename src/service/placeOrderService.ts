@@ -173,9 +173,6 @@ class PlaceOrderService {
     let updatedCart = [];
     try {
       let areProductInInventory = true;
-      let isSuccessfulPayment = true;
-
-      let totalProductPrice: number = 0;
 
       for (const ele of cartItemsToOrder.cartItem) {
         const product = await productDetailModel.findOne({ productId: ele.productId });
@@ -194,17 +191,6 @@ class PlaceOrderService {
             // totalProductPrice += product.productPrice * quantity;
           }
         }
-      }
-
-      let isPaymentSuccess;
-      const timeOutId = setTimeout(() => {}, 60000);
-
-      //@ts-ignore
-      if (this.paymentStatusFromUI.payemtSuccess == false) {
-        errorList.push("Payment Fail");
-        throw new Error("Payment failed");
-      } else {
-        // Make the OrderTable
       }
 
       if (areProductInInventory) {
@@ -235,6 +221,13 @@ class PlaceOrderService {
     console.log("paymentStatmenr=>", paymentStatusBody);
     this.paymentStatusFromUI = paymentStatusBody.payemtSuccess;
     console.log(this.paymentStatusFromUI);
+    const razorPayId = paymentStatusBody.res.paymentStatusBody;
+    const razorData = await axios.get(`https://api.razorpay.com/v1/payments/${razorPayId}`);
+    if (razorData.data.status == "authorized") {
+      // from the cart model remove the user
+      // add data in the order cart
+    }
+    console.log(paymentStatusBody.res.paymentStatusBody);
   };
 }
 

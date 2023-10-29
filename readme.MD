@@ -449,3 +449,50 @@ console.log('Server is running on port 3000');
 
 key_id,key_secret
 rzp_test_Gve1XEYDMYKP0W,qQczl8vdksUpa7LnIrKiSLu0
+
+///// UI + BACKEND
+
+form ui
+->{
+
+         "cartItem": [
+        {
+            "productName": "Eggless Crunchy Nougat",
+            "productId": "884ccdcf-8e58-4518-b85c-af4b4ccd0ec9",
+            "productPrice": "2400",
+            "quantity": "1"
+        },
+        {
+            "productName": "Cheese cake",
+            "productId": "1197ae2c-bb83-4c43-b332-0b6afb195feb",
+            "productPrice": "2400",
+            "quantity": "1"
+        }
+    ]
+    }
+
+    onClick call backend ->
+                Check if the procducts are avaiable
+
+                Make Time bound here for 1:30 min (transaction)
+                    decrement the product
+
+
+
+                    -if yes move to userDetails filling page
+                      sendThis to backend->  {
+                            name,
+                            addess,
+                            phoneNumber,
+                            totalPrice
+
+                            cartItems:[]
+                        }
+                    if no
+                        Give a toast about the products not avaiable
+                            -if list has some items move to next page to fill the details
+
+                            - else if(list got empty)
+                                -stay in checkout page with empty list with message cart is empty
+
+
