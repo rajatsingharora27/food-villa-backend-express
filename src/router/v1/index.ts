@@ -16,7 +16,8 @@ import AddProductController from "../../controller/addProductController";
 import ForgotPasswordController from "../../controller/forgotPasswordController";
 import PlaceOrderController from "../../controller/placeOrderController";
 import { FALSE } from "../../constants/applicationConstants";
-import Stripe from "stripe";
+// import Stripe from "stripe";
+import crypto from "crypto";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
@@ -49,58 +50,30 @@ router.post("/add-product", verifyAdminUser("/add-product"), productController.a
 router.delete("/delete-product", verifyAdminUser("/delete-product"), productController.deleteProduct);
 router.post("/filter-product", productController.filterProduct);
 router.post("/place-order", placeOrderController.placeOrderUserController);
-router.post("/payment-status", placeOrderController.paymentStatusController);
+router.post("/payment-fail", placeOrderController.paymentStatusController);
+router.post("/payment-success", placeOrderController.paymentSuccessController);
 router.post("/webhook", (req: Request, res: Response) => {
   console.log("inWebhook");
 });
 
 //Webhook
-// router.post("/webhook", express.raw({ type: "application/json" }), (request: Request, response: Response) => {
-//   let endpointSecret: string = "";
-//   // endpointSecret= "whsec_fa26315e188782648fa779beb867c5b670be9162849385661a5cc84bf8152cc4";
-//   const sig = request.headers["stripe-signature"];
-//   console.log("webhook verified");
-//   let event;
-//   let data;
-//   let eventType;
-//   if (process.env.STRIPE_SECRET_KEY == undefined)
-//     return {
-//       isTrue: FALSE,
-//       message: "STRIPE_SECRET_KEY is not defined",
-//       data: {},
-//     };
-//   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+// router.post("/validatePayment", (req, res) => {
+//   const secret = "abcd12345";
+//   console.log(req.body);
 
-//   if (endpointSecret) {
-//     try {
-//       //@ts-ignore
-//       event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-//     } catch (err) {
-//       response.status(400).send(`Webhook Error: ${err} `);
-//       return;
-//     }
+//   const shasum = crypto.createHmac("sha256", secret);
+//   shasum.update(JSON.stringify(req.body));
+//   const digest = shasum.digest("hex");
 
-//     // Handle the event
-//     switch (event.type) {
-//       case "payment_intent.succeeded":
-//         const paymentIntentSucceeded = event.data.object;
-//         // Then define and call a function to handle the event payment_intent.succeeded
-//         console.log("paymentIntentSucceeded");
-//         break;
-//       // ... handle other event types
-//       default:
-//         console.log(`Unhandled event type ${event.type}`);
-//     }
+//   console.log(digest, req.headers["x-razorpay-signature"]);
+
+//   if (digest === req.headers["x-razorpay-signature"]) {
+//     console.log("request is legit");
+//     console.log(JSON.stringify(req.body, null, 4));
 //   } else {
-//     data = request.body.data.object;
-//     eventType = request.body.type;
+//     // ignore it
 //   }
-
-//   if (eventType === "checkout.session.completed") {
-//   }
-
-//   // Return a 200 response to acknowledge receipt of the event
-//   response.send().end();
+//   res.json({ status: "ok" });
 // });
 
 /**

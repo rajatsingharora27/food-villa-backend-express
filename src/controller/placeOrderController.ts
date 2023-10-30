@@ -6,7 +6,7 @@ class PlaceOrderController {
   private placeOrderService = new PlaceOrderService();
   placeOrderUserController = async (req: Request, res: Response) => {
     // console.log(req.body);
-    const placeOrder = await this.placeOrderService.makePaymentAndUpdateInventory(req.body, "12345");
+    const placeOrder = await this.placeOrderService.makeOrderIDAndUpdateInventory(req.body, "12345");
     if (placeOrder.isTrue) {
       res.status(StatusCodes.OK).json({
         refId: "1234",
@@ -25,6 +25,10 @@ class PlaceOrderController {
   };
 
   paymentStatusController = async (req: Request, res: Response) => {
+    const placeOrder = await this.placeOrderService.checkPaymentFail(req.body);
+  };
+
+  paymentSuccessController = async (req: Request, res: Response) => {
     const placeOrder = await this.placeOrderService.checkPaymentSuccess(req.body);
   };
 }

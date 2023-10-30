@@ -2,9 +2,10 @@ import mongoose from "mongoose";
 import productDetailModel from "../model/productDetailModel";
 import { FALSE, TRUE } from "../constants/applicationConstants";
 import axios from "axios";
-import { constgetRazorPayInstance } from "../config/razorPayConfig";
+import { getRazorPayInstance } from "../config/razorPayConfig";
 import { v4 as uuidV4 } from "uuid";
-import Stripe from "stripe";
+import cartUserModel from "../model/cartUserModel";
+// import Stripe from "stripe";
 
 // import Stripe from "stripe";
 
@@ -164,7 +165,7 @@ class PlaceOrderService {
   //     }
   //   };
 
-  makePaymentAndUpdateInventory = async (cartItemsToOrder: any, refId: string) => {
+  makeOrderIDAndUpdateInventory = async (cartItemsToOrder: any, refId: string) => {
     const session = await mongoose.startSession();
     console.log("Call from ui");
     session.startTransaction();
@@ -192,6 +193,9 @@ class PlaceOrderService {
           }
         }
       }
+      const razorPayInstance = getRazorPayInstance();
+
+      const orderInitaiateDetails = await razorPayInstance?.orders.create({ amount: cartItemsToOrder.userInformation.totalCost, currency: "INR", receipt: "OID" + uuidV4() });
 
       if (areProductInInventory) {
         await session.commitTransaction();
@@ -200,7 +204,7 @@ class PlaceOrderService {
         return {
           isTrue: TRUE,
           message: ["Inventory Updated"],
-          data: {},
+          data: { orderInitaiateDetails },
         };
       } else {
         throw new Error("Product need to be rolled back because inventory is less than placed order");
@@ -217,17 +221,27 @@ class PlaceOrderService {
     }
   };
 
+  checkPaymentFail = async (paymentStatusBody: any) => {
+    console.log("paymentStatmenr=>", paymentStatusBody);
+    console.log("when trasaction failed");
+
+    paymentStatusBody.cartItem.forEach(async (product: any) => {
+      await productDetailModel.findOneAndUpdate({ productId: product.productId }, { $inc: { inventory: product.quantity } });
+    });
+
+    // this.paymentStatusFromUI = paymentStatusBody.payemtSuccess;
+    // console.log(this.paymentStatusFromUI);
+    // const razorPayId = paymentStatusBody.res.paymentStatusBody;
+    // const razorData = await axios.get(`https://api.razorpay.com/v1/payments/${razorPayId}`);
+    // if (razorData.data.status == "authorized") {
+    //   // from the cart model remove the user
+    //   // add data in the order cart
+    // }
+    // console.log(paymentStatusBody.res.paymentStatusBody);
+  };
+
   checkPaymentSuccess = async (paymentStatusBody: any) => {
     console.log("paymentStatmenr=>", paymentStatusBody);
-    this.paymentStatusFromUI = paymentStatusBody.payemtSuccess;
-    console.log(this.paymentStatusFromUI);
-    const razorPayId = paymentStatusBody.res.paymentStatusBody;
-    const razorData = await axios.get(`https://api.razorpay.com/v1/payments/${razorPayId}`);
-    if (razorData.data.status == "authorized") {
-      // from the cart model remove the user
-      // add data in the order cart
-    }
-    console.log(paymentStatusBody.res.paymentStatusBody);
   };
 }
 

@@ -30,6 +30,11 @@ const orderSchema = new Schema(
     userPin: {
       type: Number,
     },
+    orderStatus: {
+      type: Enumerator,
+      enum: ["Accepted", "Processing", "Completed", "Cancelled"],
+      default: "Accepted",
+    },
     userOrder: [{}], // what is in request body
   },
 
