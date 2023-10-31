@@ -5,167 +5,12 @@ import axios from "axios";
 import { getRazorPayInstance } from "../config/razorPayConfig";
 import { v4 as uuidV4 } from "uuid";
 import cartUserModel from "../model/cartUserModel";
-// import Stripe from "stripe";
-
-// import Stripe from "stripe";
+import { MAKEORDER_REQUEST, ORDER_CART } from "../Types/DataTypes";
+import logger from "../config/logger";
+import userOrderModelRepo from "../model/userOrderModel";
 
 class PlaceOrderService {
-  paymentStatusFromUI = {};
-
-  // ... (other methods and imports)
-
-  //   generatePaymentLink = async (cartItemsToOrder: any, refId: string) => {
-  //     try {
-  //       // Generate Razor Pay payment Link
-  //       const razorPayInstance = constgetRazorPayInstance();
-  //       let paymentLinkObject = {
-  //         amount: cartItemsToOrder.userInformation.totalCost * 100,
-  //         currency: "INR",
-  //         customer: {
-  //           name: cartItemsToOrder.userInformation.userName,
-  //           email: cartItemsToOrder.userInformation.emailId,
-  //           contact: cartItemsToOrder.userInformation.contactNumber,
-  //           address: cartItemsToOrder.userInformation.address,
-  //           deliverySlot: cartItemsToOrder.userInformation.delevirySlot,
-  //         },
-  //         notify: {
-  //           sms: true,
-  //           email: true,
-  //         },
-  //         callback_url: "https://example-callback-url.com/", // --> need add UI url to which i want to redirect on success payment
-  //         callback_method: "get",
-  //       };
-  //       const paymentUrl = await razorPayInstance?.paymentLink.create(paymentLinkObject);
-  //       if (paymentUrl?.short_url == null || paymentUrl?.short_url == undefined) {
-  //         throw new Error("Product need to be rolled back because inventory is less than placed order");
-  //       }
-  //       return {
-  //         isTrue: TRUE,
-  //         message: "Payment link generated successfully",
-  //         data: { paymentUrl },
-  //       };
-  //     } catch (ex) {
-  //       return {
-  //         isValid: false,
-  //         //@ts-ignore
-  //         message: [ex.message],
-  //         data: {},
-  //       };
-  //     }
-  //   };
-
-  //   generatePaymentLink = async (cartItemsToOrder: any, refId: string) => {
-  //     try {
-  //       // Generate Razor Pay payment Link
-
-  //       if (process.env.STRIPE_SECRET_KEY == undefined)
-  //         return {
-  //           isTrue: FALSE,
-  //           message: "STRIPE_SECRET_KEY is not defined",
-  //           data: {},
-  //         };
-  //       const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-  //       const paymentMethod = await stripe.paymentMethods.create({
-  //         type: "card",
-  //         card: {
-  //           number: "4242424242424242", // Replace with the actual card number
-  //           exp_month: 12, // Replace with the actual expiration month
-  //           exp_year: 23, // Replace with the actual expiration year
-  //           cvc: "123", // Replace with the actual CVC
-  //         },
-  //       });
-  //       console.log(paymentMethod);
-
-  //       const paymentIntent = await stripe.paymentIntents.create({
-  //         amount: 5000 * 100, // Stripe amount is in cents
-  //         currency: "inr",
-  //         confirm: true,
-  //         return_url: "http://localhost:5173/",
-  //         payment_method: paymentMethod.id,
-  //         payment_method_types: ["card"],
-  //       });
-  //       console.log("Intent==>", paymentIntent);
-  //       //@ts-ignore
-  //       //   const payment = await stripe.paymentIntents.confirm(paymentIntent.id, { payment_method: "pm_card_visa", return_url: "http://localhost:5173/" });
-  //       //   console.log("payment==>", payment);
-
-  //       //   const dummySource = {
-  //       //     object: "card",
-  //       //     number: "4242424242424242", // A valid card number for testing
-  //       //     exp_month: 12, // Expiry month (e.g., 12)
-  //       //     exp_year: 30, // Expiry year (e.g., 30)
-  //       //     cvc: "123", // Card security code (e.g., 123)
-  //       //   };
-
-  //       //   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-  //       //   //@ts-ignore
-  //       //   const charge = await stripe.charges.create({
-  //       //     amount: 1000, // Amount in cents
-  //       //     currency: "inr",
-  //       //     source: {
-  //       //       object: "card",
-  //       //       number: "4242424242424242", // A valid card number for testing
-  //       //       exp_month: 12, // Expiry month (e.g., 12)
-  //       //       exp_year: 30, // Expiry year (e.g., 30)
-  //       //       cvc: "123",
-  //       //     }, // Use the dummy source object
-  //       //     description: "Test payment",
-  //       //   });
-  //       //   console.log(charge);
-
-  //       /////// Working ///////////////////////
-  //       const { cartItem } = cartItemsToOrder;
-
-  //       //@ts-ignore
-  //       const lineItems = cartItem.map((items) => {
-  //         return {
-  //           price_data: {
-  //             currency: "inr",
-  //             product_data: {
-  //               name: items.productName,
-  //             },
-  //             //@ts-ignore
-  //             unit_amount: items.productPrice * 100,
-  //           },
-  //           quantity: items.quantity,
-  //         };
-  //       });
-
-  //       if (process.env.STRIPE_SECRET_KEY == undefined)
-  //         return {
-  //           isTrue: FALSE,
-  //           message: "STRIPE_SECRET_KEY is not defined",
-  //           data: {},
-  //         };
-  //       //   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-  //       const res = await stripe.checkout.sessions.create({
-  //         payment_method_types: ["card"],
-  //         line_items: lineItems,
-  //         mode: "payment",
-  //         success_url: "http://localhost:5173/",
-  //         cancel_url: "https://example-cancel-url.com/",
-  //         client_reference_id: refId,
-  //       });
-  //       console.log(res);
-
-  //       //////////// Working/////////////
-  //       return {
-  //         isTrue: TRUE,
-  //         message: "Payment link generated successfully",
-  //         data: {},
-  //       };
-  //     } catch (ex) {
-  //       return {
-  //         isValid: false,
-  //         //@ts-ignore
-  //         message: [ex.message],
-  //         data: {},
-  //       };
-  //     }
-  //   };
-
-  makeOrderIDAndUpdateInventory = async (cartItemsToOrder: any, refId: string) => {
+  makeOrderIDAndUpdateInventory = async (cartItemsToOrder: MAKEORDER_REQUEST, refId: string) => {
     const session = await mongoose.startSession();
     console.log("Call from ui");
     session.startTransaction();
@@ -221,27 +66,44 @@ class PlaceOrderService {
     }
   };
 
-  checkPaymentFail = async (paymentStatusBody: any) => {
-    console.log("paymentStatmenr=>", paymentStatusBody);
-    console.log("when trasaction failed");
-
-    paymentStatusBody.cartItem.forEach(async (product: any) => {
-      await productDetailModel.findOneAndUpdate({ productId: product.productId }, { $inc: { inventory: product.quantity } });
-    });
-
-    // this.paymentStatusFromUI = paymentStatusBody.payemtSuccess;
-    // console.log(this.paymentStatusFromUI);
-    // const razorPayId = paymentStatusBody.res.paymentStatusBody;
-    // const razorData = await axios.get(`https://api.razorpay.com/v1/payments/${razorPayId}`);
-    // if (razorData.data.status == "authorized") {
-    //   // from the cart model remove the user
-    //   // add data in the order cart
-    // }
-    // console.log(paymentStatusBody.res.paymentStatusBody);
+  checkPaymentFail = async (paymentStatusBody: MAKEORDER_REQUEST) => {
+    try {
+      paymentStatusBody.cartItem.forEach(async (product: ORDER_CART) => {
+        const updatedData = await productDetailModel.findOneAndUpdate({ productId: product.productId }, { $inc: { inventory: product.quantity } });
+        console.log(updatedData, "Data Updated");
+      });
+    } catch (ex) {
+      logger.error(`Exception occurred while updating the product table: ex:${ex}`);
+    }
   };
 
-  checkPaymentSuccess = async (paymentStatusBody: any) => {
-    console.log("paymentStatmenr=>", paymentStatusBody);
+  checkPaymentSuccess = async (paymentStatusBody: MAKEORDER_REQUEST) => {
+    // Make the order table
+
+    try {
+      let orderCartItems = paymentStatusBody.cartItem.map((item: ORDER_CART) => {
+        return {
+          productName: item.productName,
+          productId: item.productId,
+          productPrice: item.productPrice,
+          quantity: item.quantity,
+        };
+      });
+      console.log(orderCartItems, "Order");
+      const userOrderObject = {
+        orderId: "OID-" + uuidV4(),
+        razorPayId: paymentStatusBody.userInformation.razorPayId,
+        userName: paymentStatusBody.userInformation.userName,
+        userAddress: paymentStatusBody.userInformation.address,
+        userPhoneNumber: paymentStatusBody.userInformation.phoneNumber,
+        userPin: paymentStatusBody.userInformation.pin,
+        userOrder: orderCartItems,
+      };
+      const orderSaveDetails = await userOrderModelRepo.create(userOrderObject);
+      orderSaveDetails.save();
+    } catch (ex) {
+      logger.error(`Excprtion occurred while saving order Details ex:${ex}`);
+    }
   };
 }
 

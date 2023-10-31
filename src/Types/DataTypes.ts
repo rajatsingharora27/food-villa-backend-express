@@ -76,3 +76,30 @@ export interface PRODUCT_ON_FILTER {
   minInventory?: number;
   inStock?: boolean;
 }
+
+export interface ORDER_CART {
+  productName: string;
+  productId: string;
+  productPrice: number;
+  quantity: number;
+}
+
+export interface ORDER_USER_INFORMATION {
+  userName: string;
+  role: string;
+  email: string;
+  phoneNumber: string;
+  address: string;
+  pin: string;
+  extraInstructions: string;
+  userId?: string;
+  delevirySlot: string;
+  totalCost: number;
+  token?: string;
+  razorPayId?: string;
+}
+
+export interface MAKEORDER_REQUEST {
+  userInformation: ORDER_USER_INFORMATION;
+  cartItem: Array<ORDER_CART>;
+}

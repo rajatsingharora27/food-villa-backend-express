@@ -31,11 +31,30 @@ const orderSchema = new Schema(
       type: Number,
     },
     orderStatus: {
-      type: Enumerator,
+      type: String,
       enum: ["Accepted", "Processing", "Completed", "Cancelled"],
       default: "Accepted",
     },
-    userOrder: [{}], // what is in request body
+    userOrder: [
+      {
+        productId: {
+          type: String,
+          required: true,
+        },
+        productName: {
+          type: String,
+          required: true,
+        },
+        productPrice: {
+          type: Number,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+        },
+      },
+    ], // what is in request body
   },
 
   { collection: "orderDetail", timestamps: true }
