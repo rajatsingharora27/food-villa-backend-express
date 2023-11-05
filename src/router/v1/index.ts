@@ -18,6 +18,7 @@ import PlaceOrderController from "../../controller/placeOrderController";
 import { FALSE } from "../../constants/applicationConstants";
 // import Stripe from "stripe";
 import crypto from "crypto";
+import ProductRetrivecontroller from "../../controller/productRetriveController";
 
 const signUpController = new SignUpController();
 const allocateAdmin = new AdminAllocate();
@@ -28,6 +29,7 @@ const updateCartController = new UpdateCartController();
 const productController = new AddProductController();
 const forgotPasswordController = new ForgotPasswordController();
 const placeOrderController = new PlaceOrderController();
+const prductRetriveController = new ProductRetrivecontroller();
 
 //General When we want to create an admin
 router.post("/sign-up-admin", verifyUserDetails, allocateAdmin.addAdmin);
@@ -43,6 +45,7 @@ router.post("/filter-product-admin", verifyAdminUser("/filter-products-admin"), 
 router.post("/wishlist-update", verifyUserToken, wishListController.updateWishListDataOfUser);
 router.post("/cart-update", verifyUserToken, updateCartController.updateCartListDataOfUser);
 router.post("/forgot-password", verifyUserSignInDetails, forgotPasswordController.forgotPassword);
+router.get("/get-product", prductRetriveController.getProductcontroller);
 
 // Admin Related API
 router.delete("/delete-user", verifyAdminUser("/delete-user"), deleteUserController.deleteUser);
