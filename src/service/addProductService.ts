@@ -1,33 +1,58 @@
 import productDetails from "../model/productDetailModel";
-
 import { TRUE, FALSE } from "../constants/applicationConstants";
 import { PRODUCT_SAVED_IN_DATABASE_0001, PRODUCT_SAVED_IN_DATABASE_0001_1 } from "../constants/informationaMessage";
-
 import { v4 as uuidv4 } from "uuid";
-
+import multer from "multer";
 import log from "../config/logger";
-import { validInventory, validProductAlreadyInInventory, validateName, validatePrice, validateProductDetails } from "../validation/validation";
+import {
+  validInventory,
+  validProductAlreadyInInventory,
+  validateName,
+  validatePrice,
+  validateProductImageAddedToCloudinary,
+  validateStorageAndConsumptionProductDetails,
+} from "../validation/validation";
 import logger from "../config/logger";
 import productDetailModel from "../model/productDetailModel";
 import { PRODUCT_ON_FILTER } from "../Types/DataTypes";
 import { buildQuery } from "../utils/utilMethods";
+// import { v2 as cloudinary } from "cloudinary";
 
 class AddProductService {
-  addProduct = async (productData: any, refId: string) => {
+  addProduct = async (productData: any, files: any, refId: string) => {
+    // cloudinary.config({
+    //   cloud_name: process.env.CLODUINARY_NAME,
+    //   api_key: process.env.CLODUINARY_API_KEY,
+    //   api_secret: process.env.CLODUINARY_API_SECRET,
+    // });
+
     try {
       log.info(`addProduct() started refId:${refId}`);
       let errorList: Array<string> = [];
-      const [isValidName, isValidProductDetails, isValidaProductPrice, isValidInventory, isValidProductAlreadyInInventory] = await Promise.all([
-        validateName(productData.productName, errorList),
-        validateProductDetails(productData.productDetails, errorList),
-        validatePrice(productData.productPrice, errorList),
-        validInventory(productData.inventory, errorList),
-        validProductAlreadyInInventory(productData.productName, errorList),
-      ]);
-      if (isValidName && isValidInventory && isValidProductDetails && isValidaProductPrice && isValidProductAlreadyInInventory) {
+      const [isValidName, isValidaProductPrice, isValidInventory, isValidSorageDetailsAndConsumptionProductDetails, isProductAlreadyInInventory, isImageAddedToCloudinary] =
+        await Promise.all([
+          validateName(productData.productName, errorList),
+          validatePrice(productData.productPrice, errorList),
+          validInventory(productData.inventory, errorList),
+          // validateProductDetails(productData.productDetails, errorList),
+          validateStorageAndConsumptionProductDetails(productData.storageAndConsumption, errorList),
+          validProductAlreadyInInventory(productData.productName, errorList),
+          validateProductImageAddedToCloudinary(productData, files),
+        ]);
+      if (
+        isValidName &&
+        isValidInventory &&
+        isValidInventory &&
+        isValidSorageDetailsAndConsumptionProductDetails &&
+        isProductAlreadyInInventory &&
+        isImageAddedToCloudinary.isValid
+      ) {
         //SAVE PRODCUT IN DATABSE
         const PID = uuidv4();
-        const newProduct = await productDetails.create({ ...productData, productId: `${PID}` });
+        let imagePaths = [];
+        imagePaths.push(isImageAddedToCloudinary.secureUrl);
+        const newProduct = await productDetails.create({ ...productData, productId: `${PID}`, productImageUrl: imagePaths });
+
         newProduct.save();
         return {
           isValid: TRUE,

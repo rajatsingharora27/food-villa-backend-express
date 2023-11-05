@@ -35,14 +35,17 @@ const productDetailSchema = new Schema(
     productCategory: {
       type: String,
     },
-    productDetails: {
-      storageAndConsumption: { type: String },
-      ingredients: { type: String },
-      allergens: { type: String },
-    },
+
+    storageAndConsumption: { type: String },
+    ingredients: { type: String },
+    allergens: { type: String },
+
     festiveTag: {
       type: String,
       required: true,
+    },
+    productImageUrl: {
+      type: [String],
     },
   },
 

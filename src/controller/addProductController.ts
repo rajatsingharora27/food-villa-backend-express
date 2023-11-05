@@ -12,7 +12,7 @@ class AddProductController {
     const refid = res.locals.refid;
     try {
       console.log(refid);
-      const prductAddedResponse = await this.productRelatedService.addProduct(req.body, refid);
+      const prductAddedResponse = await this.productRelatedService.addProduct(req.fields, req.files, refid);
       console.log(prductAddedResponse);
       return res.status(StatusCodes.OK).json({
         refid: refid,
