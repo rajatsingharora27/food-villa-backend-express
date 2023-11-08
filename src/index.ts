@@ -29,8 +29,6 @@ const startServer = async () => {
   app.use(bodyParser.json());
   app.use(cors());
   dotenv.use;
-  // const cloudDetails = cludinaryConfigCreate();
-  // console.log(cloudDetails);
 
   app.use("/food-villa", apiRouter);
 

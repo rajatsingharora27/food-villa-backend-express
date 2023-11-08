@@ -15,6 +15,8 @@ class ProductRetrivecontroller {
       data: data.data,
     });
   };
+
+  getRandon8Products = async (req: Request, res: Response) => {};
 }
 
 export default ProductRetrivecontroller;

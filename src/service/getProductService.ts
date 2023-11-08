@@ -7,22 +7,26 @@ class GetProductService {
     let productData;
     const { category, festive } = query;
     console.log(category, festive);
-    if (category == "all") {
-      productData = await productDetailModel.find({});
-    } else {
-      let queryBuild = buildQuery(query);
-      productData = await productDetailModel.find(queryBuild);
-    }
+
+    let queryBuild = buildQuery(query);
+    productData = await productDetailModel.find(queryBuild);
+
     return {
       isValid: TRUE,
       errorMessage: [],
-      data: productData,
+      data: {
+        totalProducts: productData.length,
+        productDetails: productData,
+      },
     };
   };
 }
 function buildQuery(query: any) {
   let queryOBJ = {};
 
+  if (query.category == "all") {
+    return queryOBJ;
+  }
   if (query.category !== undefined) {
     queryOBJ = { ...queryOBJ, productCategory: query.category };
   }
