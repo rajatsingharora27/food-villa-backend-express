@@ -20,12 +20,6 @@ import { buildQuery } from "../utils/utilMethods";
 
 class AddProductService {
   addProduct = async (productData: any, files: any, refId: string) => {
-    // cloudinary.config({
-    //   cloud_name: process.env.CLODUINARY_NAME,
-    //   api_key: process.env.CLODUINARY_API_KEY,
-    //   api_secret: process.env.CLODUINARY_API_SECRET,
-    // });
-
     try {
       log.info(`addProduct() started refId:${refId}`);
       let errorList: Array<string> = [];
@@ -75,6 +69,8 @@ class AddProductService {
       };
     }
   };
+
+  addMainThemeProductDetails = (productDetail: any) => {};
 
   deleteProductFromDB = async (productId: string, refId: string) => {
     logger.info(`Delete Product from DB: ${productId} {deleteProductFromDB} started refId:${refId}`);
