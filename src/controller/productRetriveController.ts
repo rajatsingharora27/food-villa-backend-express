@@ -16,7 +16,20 @@ class ProductRetrivecontroller {
     });
   };
 
-  getRandon8Products = async (req: Request, res: Response) => {};
+  getRandon8Products = async (req: Request, res: Response) => {
+    const data = await this.getProductService.getRandom8ProductForMainPage();
+    res.status(StatusCodes.OK).json({
+      refId: "123",
+      errorMessage: data.errorMessage,
+      data: data.data,
+    });
+  };
+
+  //   getMainProductOfCompanyDetails = async (req: Request, res: Response) => {
+
+  //     const data =await
+
+  //   }
 }
 
 export default ProductRetrivecontroller;

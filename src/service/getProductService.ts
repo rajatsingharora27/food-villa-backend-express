@@ -20,7 +20,22 @@ class GetProductService {
       },
     };
   };
+
+  getRandom8ProductForMainPage = async () => {
+    const randomData = await productDetailModel.aggregate([{ $sample: { size: 8 } }]);
+    return {
+      isValid: TRUE,
+      errorMessage: [],
+      data: {
+        totalProducts: randomData.length,
+        productDetails: randomData,
+      },
+    };
+  };
+
+  getMainPageProductDetailsService = () => {};
 }
+
 function buildQuery(query: any) {
   let queryOBJ = {};
 

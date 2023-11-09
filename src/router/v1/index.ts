@@ -46,6 +46,7 @@ router.post("/wishlist-update", verifyUserToken, wishListController.updateWishLi
 router.post("/cart-update", verifyUserToken, updateCartController.updateCartListDataOfUser);
 router.post("/forgot-password", verifyUserSignInDetails, forgotPasswordController.forgotPassword);
 router.get("/get-product", prductRetriveController.getProductcontroller);
+router.get("/get-random", prductRetriveController.getRandon8Products);
 
 // Admin Related API
 router.delete("/delete-user", verifyAdminUser("/delete-user"), deleteUserController.deleteUser);
