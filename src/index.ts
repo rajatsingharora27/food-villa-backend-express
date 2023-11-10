@@ -20,13 +20,18 @@ const startServer = async () => {
   const port = process.env.PORT;
   const swaggerUIJsDocs = YAML.load("api.yml");
   app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerUIJsDocs));
-  // //Mongo Db connection
 
   connectDataBase();
 
-  app.use(formidable());
-  app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json());
+  app.use("/food-villa/api/v1/add-product", formidable());
+
+  // // Use bodyParser for other routes
+  app.use("/food-villa", bodyParser.urlencoded({ extended: true }));
+  app.use("/food-villa", bodyParser.json());
+
+  // app.use(bodyParser.urlencoded({ extended: true }));
+  // app.use(bodyParser.json());
+  // app.use(formidable());
   app.use(cors());
   dotenv.use;
 
