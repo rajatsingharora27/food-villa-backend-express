@@ -11,7 +11,7 @@ class UpdateCartController {
     const refId = res.locals.refid;
     logger.info(`{updateCartListDataOfUser()} controller started , refId: ${refId}`);
     const tokenData = res.locals.tokenData;
-    const data = await this.updateService.updateUserCart(req.body, refId, tokenData);
+    const data = await this.updateService.updateUserCartItems(req.body, refId, tokenData);
     res.status(StatusCodes.CREATED).json({
       refId,
       //   message: data.message,

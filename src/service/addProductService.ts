@@ -113,6 +113,24 @@ class AddProductService {
       data: products,
     };
   };
+
+  getProductFormId = async (productId: string) => {
+    const productDoc = await productDetailModel.findOne({ productId: productId });
+
+    if (productDoc == null) {
+      return {
+        isValdi: false,
+        message: [`Product with id ${productId} does not exist`],
+        data: {},
+      };
+    } else {
+      return {
+        isValdi: true,
+        message: [],
+        data: productDoc,
+      };
+    }
+  };
 }
 
 export default AddProductService;

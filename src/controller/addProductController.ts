@@ -93,6 +93,19 @@ class AddProductController {
       logger.error(`Exception occurred while Retiving product the product ${req.query.productId} ,refid: ${refid}`);
     }
   };
+
+  getProduct = async (req: Request, res: Response) => {
+    const refid = uuidV4();
+    const pro = req.query.product;
+    if (pro == undefined) return;
+    //@ts-ignore
+    const productInfo = await this.productRelatedService.getProductFormId(pro);
+    return res.status(StatusCodes.OK).json({
+      refid: refid,
+      message: productInfo?.message,
+      data: productInfo.data,
+    });
+  };
 }
 
 export default AddProductController;

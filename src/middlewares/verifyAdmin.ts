@@ -25,6 +25,11 @@ export const verifyAdminUser = (currentUrl: string) => {
           return;
         } else {
           messageList = isTokenVerified.message;
+          res.status(StatusCodes.EXPECTATION_FAILED).json({
+            refId,
+            message: messageList,
+            data: {},
+          });
         }
       }
     } catch (ex) {

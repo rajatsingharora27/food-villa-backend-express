@@ -51,6 +51,7 @@ router.get("/get-random", prductRetriveController.getRandon8Products);
 // Admin Related API
 router.delete("/delete-user", verifyAdminUser("/delete-user"), deleteUserController.deleteUser);
 router.post("/add-product", verifyAdminUser("/add-product"), productController.addNewProduct);
+router.get("/get-product-by-id", productController.getProduct);
 router.delete("/delete-product", verifyAdminUser("/delete-product"), productController.deleteProduct);
 router.post("/filter-product", productController.filterProduct);
 router.post("/place-order", placeOrderController.placeOrderUserController);
