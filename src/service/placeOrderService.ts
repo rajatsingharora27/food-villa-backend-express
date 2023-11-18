@@ -40,7 +40,7 @@ class PlaceOrderService {
       }
       const razorPayInstance = getRazorPayInstance();
 
-      const orderInitaiateDetails = await razorPayInstance?.orders.create({ amount: cartItemsToOrder.userInformation.totalCost, currency: "INR", receipt: "OID" + uuidV4() });
+      const orderInitaiateDetails = await razorPayInstance?.orders.create({ amount: cartItemsToOrder.userInformation.totalCost * 100, currency: "INR", receipt: "OID" + uuidV4() });
 
       if (areProductInInventory) {
         await session.commitTransaction();

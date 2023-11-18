@@ -26,6 +26,9 @@ const userCartDetailsSchema = new Schema(
         quantity: {
           type: Number,
         },
+        name: {
+          type: String,
+        },
       },
     ],
   },
