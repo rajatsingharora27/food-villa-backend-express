@@ -1,0 +1,195 @@
+openapi: 3.0.0
+info:
+  title: Food-Villa API Documentation
+  version: 1.0.0
+  description: These are the API for admin dashboard and user without admin access
+  version: 1.0
+  contact:
+    email: rajatsingharora96@gmail.com
+
+  schemes: [http, https]
+
+servers:
+  - url: http://localhost:8080/food-villa
+    description: Local development server
+
+
+
+paths:
+  /api/v1/sign-up:
+    post:
+      summary: This api if for user / admin sign up"
+      description: Generate the user token and the wishlist and cart details if user has in db or while calling the api in request body
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                  required: true
+                emailId:
+                  type: string
+                  required: true
+                phoneNumber:
+                  type: string
+                  required: true
+                password:
+                  type: string
+                  required: true
+                cartItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: string
+                      quantity:
+                        type: integer
+                      isPurchased:
+                        type: boolean
+                  nullable: true
+                wishListItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: string
+                  nullable: true
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refId:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      cartItem:
+                        oneOf: # Define possible shapes of 'cartItem'
+                          - type: array
+                            items:
+                              type: object
+                              properties:
+                                product:
+                                  type: string
+                                isPurchased:
+                                  type: boolean
+                                quantity:
+                                  type: integer
+                          - type: null
+                      wishListItem:
+                        oneOf: # Define possible shapes of 'wishListItem'
+                          - type: array
+                            items:
+                              type: string
+                          - type: null
+         
+  /api/v1/sign-in:
+    post:
+      post:
+      summary: This api if for user / admin sign up"
+      description: Generate the user token and the wishlist and cart details if user has in db or while calling the api in request body
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+      
+                emailId:
+                  type: string
+                  required: true
+               
+                password:
+                  type: string
+                  required: true
+                cartItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: string
+                      quantity:
+                        type: integer
+                      isPurchased:
+                        type: boolean
+                  nullable: true
+                wishListItems:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product:
+                        type: string
+                  nullable: true
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refId:
+                    type: string
+                  message:
+                    type: array
+                    items:
+                      type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      cartItem:
+                        oneOf: # Define possible shapes of 'cartItem'
+                          - type: array
+                            items:
+                              type: object
+                              properties:
+                                product:
+                                  type: string
+                                isPurchased:
+                                  type: boolean
+                                quantity:
+                                  type: integer
+                          - type: null
+                      wishListItem:
+                        oneOf: # Define possible shapes of 'wishListItem'
+                          - type: array
+                            items:
+                              type: string
+                          - type: null
+
+                
+
+                
+      
+      
+     
+
+              
