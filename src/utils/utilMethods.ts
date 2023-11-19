@@ -15,6 +15,7 @@ import userSignModel from "../model/userSignModel";
 import { CART_ITEM_TYPE, SIGNUP_USER, VALIDATION_RETURN_VALUE } from "../Types/DataTypes";
 import userWishListModel from "../model/userWishListModel";
 import cartUserModel from "../model/cartUserModel";
+import productDetailModel from "../model/productDetailModel";
 
 export const generateJWTtoken = (userObject: TokenInformationType) => {
   if (process.env.JWT_SECRET && process.env.JWT_SECRET !== undefined) {
@@ -201,9 +202,42 @@ export const addToWishList = async (isUserWithWishList: string[] | undefined, us
 export const getCartListItem = async (userDocumentFromDb: UserInputRequest, inputRequest: SIGNUP_USER) => {
   // here in this function because while siging in user already has something in cart
   const userCartDetailsDocument = await cartUserModel.findOne({ userId: userDocumentFromDb.userId });
+  console.log(userCartDetailsDocument);
+  let listOfProdcutId: any = [];
+
+  if (userCartDetailsDocument != null) {
+    userCartDetailsDocument.cartItem.forEach((ele: any) => {
+      listOfProdcutId.push(ele.productId);
+    });
+  }
+  if (inputRequest.cartItems != null) {
+    inputRequest.cartItems.forEach((ele: any) => {
+      listOfProdcutId.push(ele.productId);
+    });
+  }
+
+  const productCompleteInfo = await productDetailModel.find({ productId: { $in: listOfProdcutId } });
+  console.log(productCompleteInfo);
+
+  // Make object of cart item already stored items +new one
+
+  let resultCartArray = [];
+  let parentMap = new Map();
+  productCompleteInfo.forEach((items) => {
+    let obj = {
+      productId: items.productId,
+      price: items.productPrice,
+      image: items.productImageUrl[0],
+    };
+    parentMap.set(items.productId, items);
+    resultCartArray.push(obj);
+  });
+
   if (inputRequest.cartItems != null && inputRequest.cartItems.length != 0) {
+    //means i am passing somethin in cart from ui before loggin in
     if (userCartDetailsDocument) {
       // user has alsedy something in cart db
+
       let currentCartItems = userCartDetailsDocument.cartItem;
       let map = new Map();
       currentCartItems.forEach((ele) => {
@@ -256,17 +290,48 @@ export const getCartListItem = async (userDocumentFromDb: UserInputRequest, inpu
           },
         }
       );
-
+      let newArr: any = [];
+      arr.forEach((ele) => {
+        console.log("ele==>>", ele);
+        let id = ele.productId;
+        let dataWithImageAndPriceInfo = parentMap.get(id);
+        let obj = {
+          productId: id,
+          image: dataWithImageAndPriceInfo.productImageUrl[0],
+          price: dataWithImageAndPriceInfo.productPrice,
+          name: ele.name,
+          quantity: ele.quantity,
+        };
+        newArr.push(obj);
+      });
+      console.log(arr);
       return {
         isValid: true,
         message: ["Cart updated"],
-        data: arr,
+        data: newArr,
       };
     } else {
+      //mean user has passesd someting from UI and user is not stored in db so creting new user with the
+      // cart items passed by user
+
+      let cartList: any = [];
+      inputRequest.cartItems.forEach((ele) => {
+        if (parentMap.has(ele.productId)) {
+          let obj = {
+            productId: ele.productId,
+            image: parentMap.get(ele.productId).productImageUrl[0],
+            price: parentMap.get(ele.quantity).productPrice,
+            // name: ele.name,
+            quantity: ele.quantity,
+          };
+          cartList.push(obj);
+        }
+      });
+
       const newCartItem = {
         userId: userDocumentFromDb.userId,
         email: userDocumentFromDb.email,
-        cartItem: inputRequest.cartItems,
+        cartItem: cartList,
       };
       const newCartItemToBeAddedInCartTable = await cartUserModel.create(newCartItem);
       newCartItemToBeAddedInCartTable.save();
@@ -277,9 +342,29 @@ export const getCartListItem = async (userDocumentFromDb: UserInputRequest, inpu
       };
     }
   } else {
+    let cartList: any = [];
+    if (userCartDetailsDocument != null) {
+      userCartDetailsDocument.cartItem.forEach((ele: any) => {
+        if (parentMap.has(ele.productId)) {
+          let obj = {
+            name: ele.name,
+            productId: ele.productId,
+            price: parentMap.get(ele.productId).productPrice,
+            quantity: ele.quantity,
+            image: parentMap.get(ele.productId).productImageUrl[0],
+          };
+          cartList.push(obj);
+        }
+      });
+      return {
+        isValid: true,
+        message: ["Data From DB"],
+        data: cartList,
+      };
+    }
     return {
       isValid: false,
-      message: ["No data to be adde in cart"],
+      message: ["No data to be added in cart"],
       data: userCartDetailsDocument,
     };
   }
