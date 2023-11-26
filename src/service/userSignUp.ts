@@ -5,8 +5,9 @@ import userWishListModel from "../model/userWishListModel";
 import cartUserModel from "../model/cartUserModel";
 import { v4 as uuidV4 } from "uuid";
 import { USER_ROLE } from "../constants/applicationConstants";
-import { addToWishList, generateHashPassword, generateJWTtoken } from "../utils/utilMethods";
+import { addToWishList, generateHashPassword, generateJWTtoken, getCartListItem } from "../utils/utilMethods";
 import { API_RESPONSE, ResponseData } from "../Types/APIResponse";
+import productDetailModel from "../model/productDetailModel";
 
 class UserSignUpService {
   userSignUp = async (req: SIGNUP_USER, refid: string): Promise<API_RESPONSE> => {
@@ -71,6 +72,7 @@ class UserSignUpService {
 
   private async addToCartList(isUserWithCartItems: any, userId: string, emailId: string, refid: string, errorList: Array<string>) {
     let isTrue: boolean = false;
+    let productQuantMap = new Map();
     try {
       const userCartList = await cartUserModel.findOne({ email: emailId });
       //user is not present already
@@ -83,13 +85,40 @@ class UserSignUpService {
         };
         const cartListAdded = await cartUserModel.create(userCartListObject);
 
+        console.log(cartListAdded);
+
         cartListAdded.save();
+        let listOfProdcutId: any = [];
+        cartListAdded.cartItem.forEach((ele) => {
+          listOfProdcutId.push(ele.productId);
+          productQuantMap.set(ele.productId, ele.quantity);
+        });
+
+        // name: ele.name,
+        //     productId: ele.productId,
+        //     price: parentMap.get(ele.productId).productPrice,
+        //     quantity: ele.quantity,
+        //     image: parentMap.get(ele.productId).productImageUrl[0],
+
+        const productCompleteInfo = await productDetailModel.find({ productId: { $in: listOfProdcutId } });
+        console.log(productCompleteInfo);
+        let cartData: any = [];
+        productCompleteInfo.forEach((product) => {
+          let obj = {
+            productId: product.productId,
+            price: product.productPrice,
+            quantity: productQuantMap.get(product.productId),
+            image: product.productImageUrl[0],
+          };
+          cartData.push(obj);
+        });
+
         isTrue = true;
         logger.info("product added to cart list table");
         logger.info(`user Save in db userId:${userId} , email:${emailId} ,refId:${refid}`);
         return {
           isTrue,
-          data: userCartListObject,
+          data: { ...userCartListObject, cartItem: cartData },
           message: errorList,
         };
       }
