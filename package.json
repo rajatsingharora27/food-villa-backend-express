@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "food-villa-backend",
   "main": "index.js",
+
   "scripts": {
     "dev": "NODE_ENV=dev nodemon ./src/index.ts",
-    "start": "NODE_ENV=prod node ./src/index.ts"
+    "start": "NODE_ENV=prod ts-node ./src/index.ts"
   },
   "author": "",
   "license": "ISC",
