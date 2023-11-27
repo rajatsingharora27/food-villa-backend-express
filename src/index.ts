@@ -37,6 +37,10 @@ const startServer = async () => {
 
   app.use("/food-villa", apiRouter);
 
+  app.get("/", (req, res) => {
+    res.status(200).json({ data: "success" });
+  });
+
   app.listen(port, () => {
     log.info(`Listing to the ${port}`);
     log.info("****************************************************************");
